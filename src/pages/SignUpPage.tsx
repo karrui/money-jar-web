@@ -5,7 +5,8 @@ import {
 } from 'react-router-dom';
 
 import * as routes from '../constants/routes';
-import { auth } from '../components/Authentication';
+import * as auth from '../components/firebase/authMethods';
+import { db } from '../components/firebase';
 import { History } from "history";
 
 interface State {
@@ -36,6 +37,7 @@ class SignUpForm extends React.Component<Props, State> {
 
   onSubmit = (event) => {
     const {
+      username,
       email,
       password,
     } = this.state;
@@ -46,8 +48,15 @@ class SignUpForm extends React.Component<Props, State> {
 
     auth.doCreateUserWithEmailAndPassword(email, password)
       .then((authUser) => {
-        this.setState(() => ({ ...INITIAL_STATE }));
-        history.push(routes.HOME);
+        // Create a user in your own accessible Firebase Database too
+        db.userMethods.doCreateUser(authUser.user!.uid, username, email)
+          .then(() => {
+            this.setState(() => ({ ...INITIAL_STATE }));
+            history.push(routes.HOME);
+          })
+          .catch((error) => {
+            this.setState({ error });
+          });
       })
       .catch((error) => {
         this.setState({ error });

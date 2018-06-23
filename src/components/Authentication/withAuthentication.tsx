@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { User } from 'firebase';
 
-import { auth } from './firebase';
+import { auth } from '../firebase/firebase';
 import AuthUserContext from './AuthUserContext';
 
 interface State {

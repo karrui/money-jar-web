@@ -4,9 +4,10 @@ import {
 } from 'react-router-dom';
 
 import * as routes from '../constants/routes';
-import { auth } from '../components/Authentication';
+import * as auth from '../components/firebase/authMethods';
 import { History } from "history";
 import { SignUpLink } from './SignUpPage';
+import { PasswordForgetLink } from "./PasswordForgetPage";
 
 interface State {
   email: string;
@@ -91,6 +92,7 @@ const SignInPage = ({ history }) => (
   <div>
     <h1>Sign In</h1>
     <SignInForm history={history} />
+    <PasswordForgetLink />
     <SignUpLink />
   </div>
 );
