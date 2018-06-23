@@ -1,8 +1,7 @@
 {
-  "extends": ["tslint:recommended", "tslint-react", "tslint-config-prettier"],
+  "extends": ["tslint-config-airbnb", "tslint-react"],
   "linterOptions": {
     "exclude": [
-      "config/**/*.js",
       "node_modules/**/*.ts"
     ]
   },
@@ -68,11 +67,10 @@
         "check-open-brace",
         "check-whitespace"
     ],
-    "quotemark": [true, "single", "jsx-double"],
     "radix": true,
     "semicolon": [true, "always"],
     "switch-default": true,
-
+    "quotemark": ["single", "jsx-double", true],
     "trailing-comma": false,
 
     "triple-equals": [ true, "allow-null-check" ],
