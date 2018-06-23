@@ -50,13 +50,13 @@ class SignUpForm extends React.Component<Props, State> {
       .then((authUser) => {
         // Create a user in your own accessible Firebase Database too
         db.userMethods.doCreateUser(authUser.user!.uid, username, email)
-          .then(() => {
-            this.setState(() => ({ ...INITIAL_STATE }));
-            history.push(routes.HOME);
-          })
-          .catch((error) => {
-            this.setState({ error });
-          });
+        .then(() => {
+          this.setState(() => ({ ...INITIAL_STATE }));
+          history.push(routes.HOME);
+        })
+        .catch((error) => {
+          this.setState({ error });
+        });
       })
       .catch((error) => {
         this.setState({ error });

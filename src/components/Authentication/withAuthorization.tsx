@@ -1,12 +1,13 @@
 import * as React from 'react';
-import { withRouter, RouteComponentProps } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { compose } from 'recompose';
+import { withRouter } from 'react-router-dom';
 
 import { auth } from '../firebase/firebase';
-import AuthUserContext from './AuthUserContext';
 import * as routes from '../../constants/routes';
 
 const withAuthorization = authCondition => (Component) => {
-  class WithAuthorization extends React.Component<RouteComponentProps<{}>, {}> {
+  class WithAuthorization extends React.Component<any, {}> {
     componentDidMount() {
       auth.onAuthStateChanged((authUser) => {
         if (!authCondition(authUser)) {
@@ -16,15 +17,20 @@ const withAuthorization = authCondition => (Component) => {
     }
 
     render() {
-      return (
-        <AuthUserContext.Consumer>
-          {authUser => authUser ? <Component /> : null}
-        </AuthUserContext.Consumer>
-      );
+      return this.props.authUser ? <Component /> : null;
     }
   }
 
-  return withRouter(WithAuthorization);
+  const mapStateToProps = state => ({
+    authUser: state.sessionState.authUser,
+  });
+
+  const enhance = compose(
+    withRouter,
+    connect(mapStateToProps),
+  );
+
+  return enhance(WithAuthorization);
 };
 
 export default withAuthorization;

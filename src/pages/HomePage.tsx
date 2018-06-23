@@ -1,7 +1,10 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
+import { compose } from 'recompose';
 
 import withAuthorization from '../components/Authentication/withAuthorization';
 import { db } from '../components/firebase';
+import { Dispatch } from 'redux';
 
 const UserList = ({ users }) => (
   <div>
@@ -13,26 +16,24 @@ const UserList = ({ users }) => (
     )}
   </div>
 );
-interface State {
-  users: firebase.database.DataSnapshot | null;
-}
-class HomePage extends React.Component<{}, State> {
-  constructor(props: {}) {
-    super(props);
 
-    this.state = {
-      users: null,
-    };
-  }
+interface Props {
+  onSetUsers: any;
+  users: any;
+}
+
+class HomePage extends React.Component<Props> {
 
   componentDidMount() {
+    const { onSetUsers } = this.props;
+
     db.userMethods.onceGetUsers().then(snapshot =>
-      this.setState(() => ({ users: snapshot.val() }))
+      onSetUsers(snapshot.val())
     );
   }
 
   render() {
-    const { users } = this.state;
+    const { users } = this.props;
     return (
       <div>
         <h1>Home</h1>
@@ -44,6 +45,19 @@ class HomePage extends React.Component<{}, State> {
   }
 }
 
+const mapStateToProps = (state: any) => ({
+  users: state.userState.users,
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  onSetUsers: users => dispatch({ users, type: 'USERS_SET' }),
+});
+
 const authCondition = authUser => !!authUser;
 
-export default withAuthorization(authCondition)(HomePage);
+const enhance = compose(
+  withAuthorization(authCondition),
+  connect(mapStateToProps, mapDispatchToProps)
+);
+
+export default enhance(HomePage);
