@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect, Dispatch } from 'react-redux';
 
-import { firebase } from '../firebase';
+import { firebase } from '../../firebase';
 
 interface Props {
   onSetAuthUser: any;

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { compose } from 'recompose';
 import { withRouter } from 'react-router-dom';
 
-import { auth } from '../firebase/firebase';
+import { auth } from '../../firebase/firebase';
 import * as routes from '../../constants/routes';
 
 const withAuthorization = authCondition => (Component: React.ComponentClass) => {
@@ -22,7 +22,7 @@ const withAuthorization = authCondition => (Component: React.ComponentClass) => 
   }
 
   const mapStateToProps = state => ({
-    authUser: state.sessionState.authUser,
+    authUser: state.session.authUser,
   });
 
   const enhance = compose(

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { compose } from 'recompose';
 
 import withAuthorization from '../components/Authentication/withAuthorization';
-import { db } from '../components/firebase';
+import { db } from '../firebase';
 import { Dispatch } from 'redux';
 
 const UserList = ({ users }) => (
@@ -46,7 +46,7 @@ class HomePage extends React.Component<Props> {
 }
 
 const mapStateToProps = (state: any) => ({
-  users: state.userState.users,
+  users: state.user.users,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

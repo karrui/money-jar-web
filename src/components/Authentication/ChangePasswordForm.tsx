@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { authMethods } from '../firebase';
+import { authMethods } from '../../firebase';
 
 interface State {
   password: string;

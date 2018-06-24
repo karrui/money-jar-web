@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { History } from "history";
 
-import { authMethods, db } from '../firebase';
+import { authMethods, db } from '../../firebase';
 import { HOME } from '../../constants/routes';
 
 interface State {
