@@ -23,3 +23,10 @@ export const doPasswordReset = email =>
 // Password change
 export const doPasswordUpdate = password =>
   auth.currentUser!.updatePassword(password);
+
+// Set display name
+export const doDisplayNameChange = username =>
+  auth.currentUser!.updateProfile({
+    displayName: username,
+    photoURL: null,
+  });

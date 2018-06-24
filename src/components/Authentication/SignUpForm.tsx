@@ -43,9 +43,13 @@ class SignUpForm extends React.Component<Props, State> {
     } = this.props;
 
     authMethods.doCreateUserWithEmailAndPassword(email, password)
-      .then((authUser) => {
-        // Create a user in your own accessible Firebase Database too
-        db.userMethods.doCreateUser(authUser.user!.uid, username, email)
+      .then((currentUser) => {
+        Promise.all([
+          // set displayName to username
+          authMethods.doDisplayNameChange(username),
+          // Create a user in your own accessible Firebase Database too
+          db.userMethods.doCreateUser(currentUser.user!.uid, username, email),
+        ])
         .then(() => {
           this.setState(() => ({ ...INITIAL_STATE }));
           history.push(HOME);

@@ -9,20 +9,20 @@ import * as routes from '../../constants/routes';
 const withAuthorization = authCondition => (Component: React.ComponentClass) => {
   class WithAuthorization extends React.Component<any, {}> {
     componentDidMount() {
-      auth.onAuthStateChanged((authUser) => {
-        if (!authCondition(authUser)) {
+      auth.onAuthStateChanged((currentUser) => {
+        if (!authCondition(currentUser)) {
           this.props.history.push(routes.SIGN_IN);
         }
       });
     }
 
     render() {
-      return this.props.authUser ? <Component /> : null;
+      return this.props.currentUser ? <Component /> : null;
     }
   }
 
   const mapStateToProps = state => ({
-    authUser: state.session.authUser,
+    currentUser: state.session.currentUser,
   });
 
   const enhance = compose(

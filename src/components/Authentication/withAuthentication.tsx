@@ -12,9 +12,9 @@ const withAuthentication = (Component) => {
     componentDidMount() {
       const { onSetAuthUser } = this.props;
 
-      firebase.auth.onAuthStateChanged((authUser) => {
-        authUser
-          ? onSetAuthUser(authUser)
+      firebase.auth.onAuthStateChanged((currentUser) => {
+        currentUser
+          ? onSetAuthUser(currentUser)
           : onSetAuthUser(null);
       });
     }
@@ -27,7 +27,7 @@ const withAuthentication = (Component) => {
   }
 
   const mapDispatchToProps = (dispatch: Dispatch) => ({
-    onSetAuthUser: authUser => dispatch({ authUser, type: 'AUTH_USER_SET' }),
+    onSetAuthUser: currentUser => dispatch({ type: 'AUTH_USER_SET', payload: currentUser }),
   });
 
   return connect(null, mapDispatchToProps)(WithAuthentication);

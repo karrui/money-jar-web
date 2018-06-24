@@ -7,21 +7,21 @@ import withAuthorization from '../../components/Authentication/withAuthorization
 
 interface AccountProps {
   children?: React.ReactNode;
-  authUser: firebase.User;
+  currentUser: firebase.User;
 }
 
-const AccountPage: React.SFC = ({ authUser }: AccountProps) => (
+const AccountPage: React.SFC = ({ currentUser }: AccountProps) => (
   <div>
-    <h1>Account: {authUser.email}</h1>
+    <h1>Account: {currentUser.email}</h1>
     <ChangePasswordForm />
   </div>
 );
 
 const mapStateToProps = state => ({
-  authUser: state.session.authUser,
+  currentUser: state.session.currentUser,
 });
 
-const authCondition = authUser => !!authUser;
+const authCondition = currentUser => !!currentUser;
 
 const enhance = compose(
   withAuthorization(authCondition),
