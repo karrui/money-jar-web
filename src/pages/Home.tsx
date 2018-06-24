@@ -5,55 +5,88 @@ import { compose } from 'recompose';
 import withAuthorization from '../components/Authentication/withAuthorization';
 import { db } from '../firebase';
 import { Dispatch } from 'redux';
+import CreateJarForm from '../components/Jar/CreateJarForm';
+import { Link } from 'react-router-dom';
 
-const UserList = ({ users }) => (
+const JarList = ({ jars, username }) => (
   <div>
-    <h2>List of Usernames of Users</h2>
-    <p>(Saved on Sign Up in Firebase Database)</p>
+    <h2>Your jars</h2>
 
-    {Object.keys(users).map(key =>
-      <div key={key}>{users[key].username}</div>
-    )}
+    {Object.keys(jars).map(key => (
+      <div key={key}>
+        <Link to={`/${username}/jars/${key}`} >{jars[key].name}</Link>
+      </div>
+    ))}
   </div>
 );
 
 interface Props {
-  onSetUsers: any;
-  users: any;
+  onSetJars: Function;
+  onResetJars: Function;
+  jars: object;
+  userId: string;
+  username: string;
 }
 
-class HomePage extends React.Component<Props> {
+interface State {
+  isFormShown: boolean;
+}
+
+class HomePage extends React.Component<Props, State> {
+  constructor(props: Props) {
+    super(props);
+    this.state = { isFormShown: false };
+
+    // This binding is necessary to make `this` work in the callback
+    this.handleClick = this.handleClick.bind(this);
+  }
 
   componentDidMount() {
-    const { onSetUsers } = this.props;
+    const { userId, onSetJars } = this.props;
+    db.jarMethods.getJarsByUserId(userId)
+    .then(jars => onSetJars(jars.val()));
+  }
 
-    db.userMethods.onceGetUsers().then(snapshot =>
-      onSetUsers(snapshot.val())
-    );
+  componentWillUnmount() {
+    this.props.onResetJars();
+  }
+
+  handleClick() {
+    this.setState(prevState => ({
+      isFormShown: !prevState.isFormShown
+    }));
   }
 
   render() {
-    const { users } = this.props;
+    const { jars, username } = this.props;
     return (
       <div>
         <h1>Home</h1>
         <p>The Home Page is accessible by every signed in user.</p>
-
-        {!!users && <UserList users={users} />}
+        {
+          this.state.isFormShown 
+          ? <CreateJarForm />
+          : <button onClick={this.handleClick}>+</button>
+        }
+        {!!jars &&
+          <JarList jars={jars} username={username} />}
       </div>
     );
   }
 }
 
 const mapStateToProps = (state: any) => ({
-  users: state.user.users,
+  userId: state.session.currentUser.uid,
+  username: state.session.currentUser.displayName,
+  jars: state.jars,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  onSetUsers: users => dispatch({ users, type: 'USERS_SET' }),
+  onSetJars: jars => dispatch({ type: 'JARS_SET', payload: jars }),
+  onResetJars: () => dispatch({ type: 'JARS_RESET' }),
 });
 
-const authCondition = authUser => !!authUser;
+const authCondition = currentUser => !!currentUser;
 
 const enhance = compose(
   withAuthorization(authCondition),

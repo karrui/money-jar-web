@@ -1,10 +1,10 @@
-import { combineReducers } from "redux";
-import session from "./session";
-import user from "./user";
+import { combineReducers } from 'redux';
+import session from './session';
+import jars from './jars';
 
 const rootReducer = combineReducers({
   session,
-  user
+  jars,
 });
 
 export default rootReducer;

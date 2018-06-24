@@ -25,9 +25,9 @@ const NavigationNonAuth = () => (
   </div>
 );
 
-const Navigation = ({ authUser }) => (
+const Navigation = ({ currentUser }) => (
   <div>
-    { authUser
+    { currentUser
         ? <NavigationAuth />
         : <NavigationNonAuth />
     }
@@ -35,7 +35,7 @@ const Navigation = ({ authUser }) => (
 );
 
 const mapStateToProps = state => ({
-  authUser: state.session.authUser,
+  currentUser: state.session.currentUser,
 });
 
 export default connect(mapStateToProps)(Navigation);
