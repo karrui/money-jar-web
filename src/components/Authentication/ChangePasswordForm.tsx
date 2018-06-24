@@ -1,17 +1,16 @@
 import * as React from 'react';
-
-import * as auth from '../components/firebase/authMethods';
+import { authMethods } from '../firebase';
 
 interface State {
   password: string;
   confirmPassword: string;
-  error: { message: string } | null;
+  message: string | null;
 }
 
 const INITIAL_STATE = {
   password: '',
   confirmPassword: '',
-  error: null,
+  message: null,
 };
 
 class PasswordChangeForm extends React.Component<{}, State> {
@@ -24,12 +23,15 @@ class PasswordChangeForm extends React.Component<{}, State> {
   onSubmit = (event) => {
     const { password } = this.state;
 
-    auth.doPasswordUpdate(password)
+    authMethods.doPasswordUpdate(password)
       .then(() => {
-        this.setState(() => ({ ...INITIAL_STATE, error: { message: "Password successfully changed." } }));
+        this.setState(() => ({
+          ...INITIAL_STATE,
+          message: "Password successfully changed."
+        }));
       })
       .catch((error) => {
-        this.setState({ error });
+        this.setState({ message: error.message });
       });
 
     event.preventDefault();
@@ -39,7 +41,7 @@ class PasswordChangeForm extends React.Component<{}, State> {
     const {
       password,
       confirmPassword,
-      error,
+      message,
     } = this.state;
 
     const isInvalid =
@@ -64,7 +66,7 @@ class PasswordChangeForm extends React.Component<{}, State> {
           Reset My Password
         </button>
 
-        {error && <p>{error.message}</p>}
+        {message && <p>{message}</p>}
       </form>
     );
   }

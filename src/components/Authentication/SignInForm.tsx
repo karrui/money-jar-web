@@ -1,18 +1,14 @@
-import * as React from "react";
-import {
-  withRouter,
-} from 'react-router-dom';
+import * as React from 'react';
 
-import * as routes from '../constants/routes';
-import * as auth from '../components/firebase/authMethods';
-import { History } from "history";
-import { SignUpLink } from './SignUpPage';
-import { PasswordForgetLink } from "./PasswordForgetPage";
+import { History } from 'history';
+
+import { authMethods } from '../firebase';
+import { HOME } from '../../constants/routes';
 
 interface State {
   email: string;
   password: string;
-  error: { message: string } | null;
+  message: string | null;
 }
 
 interface Props {
@@ -22,7 +18,7 @@ interface Props {
 const INITIAL_STATE = {
   email: '',
   password: '',
-  error: null,
+  message: null,
 };
 
 class SignInForm extends React.Component<Props, State> {
@@ -41,13 +37,13 @@ class SignInForm extends React.Component<Props, State> {
       history,
     } = this.props;
 
-    auth.doSignInWithEmailAndPassword(email, password)
+    authMethods.doSignInWithEmailAndPassword(email, password)
       .then(() => {
         this.setState(() => ({ ...INITIAL_STATE }));
-        history.push(routes.HOME);
+        history.push(HOME);
       })
       .catch((error) => {
-        this.setState({ error });
+        this.setState({ message: error.message });
       });
 
     event.preventDefault();
@@ -57,7 +53,7 @@ class SignInForm extends React.Component<Props, State> {
     const {
       email,
       password,
-      error,
+      message,
     } = this.state;
 
     const isInvalid =
@@ -82,19 +78,10 @@ class SignInForm extends React.Component<Props, State> {
           Sign In
         </button>
 
-        {error && <p>{error.message}</p>}
+        {message && <p>{message}</p>}
       </form>
     );
   }
 }
 
-const SignInPage = ({ history }) => (
-  <div>
-    <h1>Sign In</h1>
-    <SignInForm history={history} />
-    <PasswordForgetLink />
-    <SignUpLink />
-  </div>
-);
-
-export default withRouter(SignInPage);
+export default SignInForm;

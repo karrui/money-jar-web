@@ -6,7 +6,7 @@ import { withRouter } from 'react-router-dom';
 import { auth } from '../firebase/firebase';
 import * as routes from '../../constants/routes';
 
-const withAuthorization = authCondition => (Component) => {
+const withAuthorization = authCondition => (Component: React.ComponentClass) => {
   class WithAuthorization extends React.Component<any, {}> {
     componentDidMount() {
       auth.onAuthStateChanged((authUser) => {

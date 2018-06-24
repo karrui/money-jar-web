@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect, Dispatch } from 'react-redux';
 
-import { auth } from '../firebase/firebase';
+import { firebase } from '../firebase';
 
 interface Props {
   onSetAuthUser: any;
@@ -12,7 +12,7 @@ const withAuthentication = (Component) => {
     componentDidMount() {
       const { onSetAuthUser } = this.props;
 
-      auth.onAuthStateChanged((authUser) => {
+      firebase.auth.onAuthStateChanged((authUser) => {
         authUser
           ? onSetAuthUser(authUser)
           : onSetAuthUser(null);

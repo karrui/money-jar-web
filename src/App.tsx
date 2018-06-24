@@ -5,12 +5,10 @@ import {
 } from 'react-router-dom';
 
 import Navigation from './components/Navigation';
-import LandingPage from './pages/LandingPage';
-import SignUpPage from './pages/SignUpPage';
-import SignInPage from './pages/SignInPage';
-import PasswordForgetPage from './pages/PasswordForgetPage';
-import HomePage from './pages/HomePage';
-import AccountPage from './pages/AccountPage';
+
+import * as Account from './pages/Account';
+import Landing from './pages/Landing';
+import Home from './pages/Home';
 
 import * as routes from './constants/routes';
 import withAuthentication from './components/Authentication/withAuthentication';
@@ -22,12 +20,12 @@ const App = () => (
 
       <hr/>
 
-      <Route exact={true} path={routes.LANDING} component={() => <LandingPage />} />
-      <Route exact={true} path={routes.SIGN_UP} component={() => <SignUpPage />} />
-      <Route exact={true} path={routes.SIGN_IN} component={() => <SignInPage />} />
-      <Route exact={true} path={routes.PASSWORD_FORGET} component={() => <PasswordForgetPage />} />
-      <Route exact={true} path={routes.HOME} component={() => <HomePage />} />
-      <Route exact={true} path={routes.ACCOUNT} component={() => <AccountPage />} />
+      <Route exact={true} path={routes.LANDING} component={Landing} />
+      <Route exact={true} path={routes.SIGN_UP} component={Account.SignUp} />
+      <Route exact={true} path={routes.SIGN_IN} component={Account.SignIn} />
+      <Route exact={true} path={routes.PASSWORD_FORGET} component={Account.PasswordForget} />
+      <Route exact={true} path={routes.HOME} component={Home} />
+      <Route exact={true} path={routes.ACCOUNT} component={Account.Account} />
     </div>
   </Router>
 );
