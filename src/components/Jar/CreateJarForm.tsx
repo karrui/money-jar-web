@@ -47,6 +47,10 @@ class CreateJarForm extends React.Component<any, State> {
       goalAmount,
     } = this.state;
 
+    const isInvalid =
+      name === '' ||
+      currentAmount >= goalAmount;
+
     return (
       <form onSubmit={this.onSubmit}>
         <input
@@ -67,7 +71,7 @@ class CreateJarForm extends React.Component<any, State> {
           type="number"
           placeholder={this.state.goalAmount}
         />
-        <button type="submit">
+        <button type="submit" disabled={isInvalid}>
           Create a money jar!
         </button>
       </form>

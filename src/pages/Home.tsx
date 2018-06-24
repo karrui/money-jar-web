@@ -6,19 +6,7 @@ import withAuthorization from '../components/Authentication/withAuthorization';
 import { db } from '../firebase';
 import { Dispatch } from 'redux';
 import CreateJarForm from '../components/Jar/CreateJarForm';
-import { Link } from 'react-router-dom';
-
-const JarList = ({ jars, username }) => (
-  <div>
-    <h2>Your jars</h2>
-
-    {Object.keys(jars).map(key => (
-      <div key={key}>
-        <Link to={`/${username}/jars/${key}`} >{jars[key].name}</Link>
-      </div>
-    ))}
-  </div>
-);
+import JarList from '../components/Jar/JarList';
 
 interface Props {
   onSetJars: Function;
@@ -47,9 +35,9 @@ class HomePage extends React.Component<Props, State> {
     .then(jars => onSetJars(jars.val()));
   }
 
-  componentWillUnmount() {
-    this.props.onResetJars();
-  }
+  // componentWillUnmount() {
+  //   this.props.onResetJars();
+  // }
 
   handleClick() {
     this.setState(prevState => ({
@@ -78,7 +66,7 @@ class HomePage extends React.Component<Props, State> {
 const mapStateToProps = (state: any) => ({
   userId: state.session.currentUser.uid,
   username: state.session.currentUser.displayName,
-  jars: state.jars,
+  jars: state.jars.jarList,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

@@ -42,25 +42,32 @@ class SignUpForm extends React.Component<Props, State> {
       history,
     } = this.props;
 
-    authMethods.doCreateUserWithEmailAndPassword(email, password)
-      .then((currentUser) => {
-        Promise.all([
-          // set displayName to username
-          authMethods.doDisplayNameChange(username),
-          // Create a user in your own accessible Firebase Database too
-          db.userMethods.doCreateUser(currentUser.user!.uid, username, email),
-        ])
-        .then(() => {
-          this.setState(() => ({ ...INITIAL_STATE }));
-          history.push(HOME);
+    db.userMethods.checkUsernameExist(username)
+    .then((snapshot) => {
+      if (snapshot.val()) {
+        this.setState({ message: 'Sorry, this username is already taken' });
+      } else {
+        authMethods.doCreateUserWithEmailAndPassword(email, password)
+        .then((currentUser) => {
+          Promise.all([
+            // set displayName to username
+            authMethods.doDisplayNameChange(username),
+            // Create a user in your own accessible Firebase Database too
+            db.userMethods.doCreateUser(currentUser.user!.uid, username, email),
+          ])
+          .then(() => {
+            this.setState(() => ({ ...INITIAL_STATE }));
+            history.push(HOME);
+          })
+          .catch((error) => {
+            this.setState({ message: error.message });
+          });
         })
         .catch((error) => {
           this.setState({ message: error.message });
         });
-      })
-      .catch((error) => {
-        this.setState({ message: error.message });
-      });
+      }
+    });
 
     event.preventDefault();
   }

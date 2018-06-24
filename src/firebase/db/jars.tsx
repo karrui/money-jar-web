@@ -24,6 +24,7 @@ export const doCreateJar = (userId, jarName, currentAmount, goalAmount) => {
       createdAt: timestamp,
       lastUpdated: timestamp,
       owner: userId,
+      id: key,
     }),
     db.ref(`/users/${userId}/jars/${key}`).set(true)
   ]);
@@ -69,4 +70,9 @@ export const removeTransactionFromJar = (transactionId, jarId) => {
 // Get all the jars by the user id
 export const getJarsByUserId = (userId) => {
   return db.ref(`/jars`).orderByChild('owner').equalTo(userId).once('value');
+};
+
+// Get specific jar by user id and jar id
+export const getJarByJarId = (jarId) => {
+  return db.ref(`/jars/${jarId}`).once('value');
 };

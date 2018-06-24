@@ -9,6 +9,7 @@ import Navigation from './components/Navigation';
 import * as Account from './pages/Account';
 import Landing from './pages/Landing';
 import Home from './pages/Home';
+import JarView from './pages/Jar/JarView';
 
 import * as routes from './constants/routes';
 import withAuthentication from './components/Authentication/withAuthentication';
@@ -26,6 +27,8 @@ const App = () => (
       <Route exact={true} path={routes.PASSWORD_FORGET} component={Account.PasswordForget} />
       <Route exact={true} path={routes.HOME} component={Home} />
       <Route exact={true} path={routes.ACCOUNT} component={Account.Account} />
+
+      <Route path={'/:user/jars/:id'} component={JarView} />
     </div>
   </Router>
 );
