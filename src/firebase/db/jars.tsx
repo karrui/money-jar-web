@@ -1,4 +1,5 @@
 import { db, dbTimestamp } from "../firebase";
+import Jar from "../../components/Jar";
 
 /* Jar model in Firebase:
 
@@ -31,22 +32,26 @@ export const doCreateJar = (userId, jarName, currentAmount, goalAmount) => {
 };
 
 // Add amount into jar with Id
-export const addTransactionToJar = (jarId, userId, transactionAmount) => {
-  const key = db.ref(`/jars/${jarId}/history`).push().key;
+export const addTransactionToJar = (jar: Jar, user: firebase.User, transactionAmount: string, notes: string) => {
+  const { id, currentAmount } = jar;
+  const { displayName, uid } = user;
+  const key = db.ref(`/jars/${id}/history`).push().key;
   const timestamp = dbTimestamp;
+
+  const updatedJar = {
+    currentAmount: currentAmount + Number(transactionAmount),
+    lastUpdated: timestamp,
+  };
+  
   return Promise.all([
-    db.ref(`/jars/${jarId}/history/${key}`).set({
-      userId,
+    db.ref(`/jars/${id}/history/${key}`).set({
+      notes,
+      userId: uid,
+      username: displayName,
       amount: Number(transactionAmount),
       createdAt: timestamp,
     }),
-    db.ref(`/jars/${jarId}`).once('value').then((jar: any) => {
-      const updatedJar = {
-        ...jar,
-        amount: jar.amount + Number(transactionAmount),
-      };
-      db.ref(`/jars/${jarId}`).update(updatedJar);
-    }),
+    db.ref(`/jars/${id}`).update(updatedJar),
   ]);
 };
 

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { compose } from 'recompose';
 
 import withAuthorization from '../components/Authentication/withAuthorization';
-import { db } from '../firebase';
+import { db } from '../firebase/firebase';
 import { Dispatch } from 'redux';
 import CreateJarForm from '../components/Jar/CreateJarForm';
 import JarList from '../components/Jar/JarList';
@@ -17,27 +17,43 @@ interface Props {
 }
 
 interface State {
+  userId: string;
   isFormShown: boolean;
+  dbQuery: firebase.database.Query;
+  jars?: any;
 }
 
 class HomePage extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
-    this.state = { isFormShown: false };
+
+    const { userId } = this.props;
+    const dbQuery = db.ref(`/jars`).orderByChild('owner').equalTo(userId);
+
+    this.state = {
+      userId,
+      dbQuery,
+      isFormShown: false
+    };
 
     // This binding is necessary to make `this` work in the callback
     this.handleClick = this.handleClick.bind(this);
   }
 
   componentDidMount() {
-    const { userId, onSetJars } = this.props;
-    db.jarMethods.getJarsByUserId(userId)
-    .then(jars => onSetJars(jars.val()));
+    const { onSetJars } = this.props;
+    this.state.dbQuery.on('value', (snapshot: any) => {
+      const jars = snapshot.val();
+      this.setState({
+        jars,
+      });
+      onSetJars(jars);
+    });
   }
 
-  // componentWillUnmount() {
-  //   this.props.onResetJars();
-  // }
+  componentWillUnmount() {
+    this.state.dbQuery.off();
+  }
 
   handleClick() {
     this.setState(prevState => ({
@@ -46,7 +62,8 @@ class HomePage extends React.Component<Props, State> {
   }
 
   render() {
-    const { jars, username } = this.props;
+    const { username } = this.props;
+    const { jars } = this.state;
     return (
       <div>
         <h1>Home</h1>
@@ -66,12 +83,10 @@ class HomePage extends React.Component<Props, State> {
 const mapStateToProps = (state: any) => ({
   userId: state.session.currentUser.uid,
   username: state.session.currentUser.displayName,
-  jars: state.jars.jarList,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   onSetJars: jars => dispatch({ type: 'JARS_SET', payload: jars }),
-  onResetJars: () => dispatch({ type: 'JARS_RESET' }),
 });
 
 const authCondition = currentUser => !!currentUser;

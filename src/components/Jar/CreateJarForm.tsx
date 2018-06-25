@@ -28,7 +28,9 @@ class CreateJarForm extends React.Component<any, State> {
     this.state = { ...INITIAL_STATE };
   }
 
-  onSubmit = (event) => {
+  onSubmit = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
     const {
       name,
       currentAmount,
@@ -38,6 +40,7 @@ class CreateJarForm extends React.Component<any, State> {
     const { userId } = this.props;
 
     doCreateJar(userId, name, currentAmount, goalAmount);
+    this.setState(INITIAL_STATE);
   }
 
   render() {
@@ -49,7 +52,7 @@ class CreateJarForm extends React.Component<any, State> {
 
     const isInvalid =
       name === '' ||
-      currentAmount >= goalAmount;
+      Number(currentAmount) >= Number(goalAmount);
 
     return (
       <form onSubmit={this.onSubmit}>
@@ -71,7 +74,10 @@ class CreateJarForm extends React.Component<any, State> {
           type="number"
           placeholder={this.state.goalAmount}
         />
-        <button type="submit" disabled={isInvalid}>
+        <button
+          type="submit"
+          disabled={isInvalid}
+        >
           Create a money jar!
         </button>
       </form>

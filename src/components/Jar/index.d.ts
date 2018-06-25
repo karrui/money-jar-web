@@ -1,4 +1,4 @@
-export interface Jar {
+export default interface Jar {
   createdAt: Date;
   currentAmount: number;
   goalAmount: number;
