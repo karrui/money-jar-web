@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 const JarListItem = ({ id, username, jars }) => {
   const { name, currentAmount, goalAmount } = jars[id];
-  const percentDone = (currentAmount / goalAmount).toFixed(2);
+  const percentDone = ((currentAmount / goalAmount) * 100).toFixed(2);
   return (
     <div>
       <Link to={`/${username}/jars/${id}`}>{name}</Link>
