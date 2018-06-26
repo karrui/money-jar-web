@@ -7,6 +7,7 @@ import { connect, Dispatch } from 'react-redux';
 import { db } from '../../firebase/firebase';
 import AddJarTransactionForm from '../../components/Jar/AddJarTransactionForm';
 import Error404 from '../Error404';
+import HistoryItem from './HistoryItem';
 
 class JarView extends React.Component<any, any> {
   constructor(props: any) {
@@ -50,25 +51,32 @@ class JarView extends React.Component<any, any> {
   render() {
     const { currentJar } = this.state;
 
-    return (this.state.isLoading && !currentJar)
-    ? <div>Please wait...</div>
-    : currentJar === null
-      ? <Error404 />
-      : (
+    if (this.state.isLoading) {
+      return <div>Please wait...</div>;
+    }
+
+    if (currentJar === null) {
+      return <Error404 />;
+    }
+
+    return (
+      <div>
         <div>
-          <div>
-            {currentJar.name}
-            {currentJar.currentAmount} / {currentJar.goalAmount}
-            Last updated: {currentJar.lastUpdated}
-            Hello
-          </div>
-          {
-            this.state.isFormShown 
-            ? <AddJarTransactionForm />
-            : <button type="button" onClick={this.handleClick}>Add money</button>
-          }
+          {currentJar.name}
+          {currentJar.currentAmount} / {currentJar.goalAmount}
+          Last updated: {new Date(currentJar.lastUpdated).toLocaleTimeString()}
         </div>
-      );
+        {this.state.isFormShown 
+          ? <AddJarTransactionForm />
+          : <button type="button" onClick={this.handleClick}>Add money</button>}
+        <div>
+          {currentJar.history && Object.keys(currentJar.history).map((key) => {
+            const item = currentJar.history[key];
+            return <HistoryItem key={key} item={item} transactionId={key} jarId={currentJar.id} />;
+          })}
+        </div>
+      </div>
+    );
   }
 }
 

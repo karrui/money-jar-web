@@ -57,13 +57,15 @@ export const addTransactionToJar = (jar: Jar, user: firebase.User, transactionAm
 
 // Remove transaction
 export const removeTransactionFromJar = (transactionId, jarId) => {
+  const timestamp = dbTimestamp;
+
   return Promise.all([
     db.ref(`jars/${jarId}/history/${transactionId}/amount`).once('value')
     .then((transactionAmount: any) =>
-      db.ref(`jars/${jarId}`).once('value').then((jar: any) => {
+      db.ref(`jars/${jarId}`).once('value').then((jar) => {
         const updatedJar = {
-          ...jar,
-          amount: jar.amount - Number(transactionAmount),
+          currentAmount: jar.val().currentAmount - Number(transactionAmount.val()),
+          lastUpdated: timestamp,
         };
         db.ref(`/jars/${jarId}`).update(updatedJar);
       })
