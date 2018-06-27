@@ -17,17 +17,17 @@ const App = () => (
   <Router>
     <div>
       <Header />
-
       <hr/>
+      <div className="content">
+        <Route exact={true} path={routes.LANDING} component={Landing} />
+        <Route exact={true} path={routes.SIGN_UP} component={Account.SignUp} />
+        <Route exact={true} path={routes.SIGN_IN} component={Account.SignIn} />
+        <Route exact={true} path={routes.PASSWORD_FORGET} component={Account.PasswordForget} />
+        <Route exact={true} path={routes.HOME} component={Home} />
+        <Route exact={true} path={routes.ACCOUNT} component={Account.Account} />
 
-      <Route exact={true} path={routes.LANDING} component={Landing} />
-      <Route exact={true} path={routes.SIGN_UP} component={Account.SignUp} />
-      <Route exact={true} path={routes.SIGN_IN} component={Account.SignIn} />
-      <Route exact={true} path={routes.PASSWORD_FORGET} component={Account.PasswordForget} />
-      <Route exact={true} path={routes.HOME} component={Home} />
-      <Route exact={true} path={routes.ACCOUNT} component={Account.Account} />
-
-      <Route path={'/:user/jars/:id'} component={JarView} />
+        <Route path={'/:user/jars/:id'} component={JarView} />
+      </div>
     </div>
   </Router>
 );

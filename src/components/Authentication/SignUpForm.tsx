@@ -93,29 +93,27 @@ class SignUpForm extends React.Component<Props, State> {
           value={username}
           onChange={event => this.setState({ username: event.target.value })}
           type="text"
-          placeholder="Username"
+          placeholder="Choose a username"
         />
         <input
           value={email}
           onChange={event => this.setState({ email: event.target.value })}
           type="text"
-          placeholder="Email Address"
+          placeholder="What's your email address?"
         />
         <input
           value={password}
           onChange={event => this.setState({ password: event.target.value })}
           type="password"
-          placeholder="Password"
+          placeholder="Enter a password"
         />
         <input
           value={confirmPassword}
           onChange={event => this.setState({ confirmPassword: event.target.value })}
           type="password"
-          placeholder="Confirm Password"
+          placeholder="Confirm the password"
         />
-        <button disabled={isInvalid} type="submit">
-          Sign Up
-        </button>
+        <input disabled={isInvalid} type="submit" value="Sign Up" />
 
         {message && <p>{message}</p>}
       </form>

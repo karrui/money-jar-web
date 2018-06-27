@@ -18,10 +18,12 @@ const SignUpPage: any = ({ history, currentUser }) => {
   return currentUser
   ? <Error404 />
   : (
-    <div>
-      <h1>Sign Up</h1>
-      <SignUpForm history={history} />
-      <SignInLink />
+    <div className="login card">
+      <div className="login-inner card-inner">
+        <h1 className="words">Sign Up</h1>
+        <SignUpForm history={history} />
+        <SignInLink />
+      </div>
     </div>
   );
 };

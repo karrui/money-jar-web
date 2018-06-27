@@ -66,18 +66,15 @@ class SignInForm extends React.Component<Props, State> {
           value={email}
           onChange={event => this.setState({ email: event.target.value })}
           type="text"
-          placeholder="Email Address"
+          placeholder="What's your email?"
         />
         <input
           value={password}
           onChange={event => this.setState({ password: event.target.value })}
           type="password"
-          placeholder="Password"
+          placeholder="Enter your password"
         />
-        <button disabled={isInvalid} type="submit">
-          Sign In
-        </button>
-
+        <input disabled={isInvalid} type="submit" value="Sign In" />
         {message && <p>{message}</p>}
       </form>
     );
