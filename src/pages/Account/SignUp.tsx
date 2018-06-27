@@ -1,14 +1,18 @@
 import * as React from "react";
-import {
-  Link,
-  withRouter,
-} from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
 import { compose } from "recompose";
 import { connect } from "react-redux";
 
-import { SIGN_UP } from '../../constants/routes';
 import SignUpForm from '../../components/Authentication/SignUpForm';
 import Error404 from '../Error404';
+import { SIGN_IN } from "../../constants/routes";
+
+const SignInLink = () => (
+  <p>
+    Already have an account? &nbsp;
+    <Link to={SIGN_IN}>Sign In</Link>
+  </p>
+);
 
 const SignUpPage: any = ({ history, currentUser }) => {
   return currentUser
@@ -17,6 +21,7 @@ const SignUpPage: any = ({ history, currentUser }) => {
     <div>
       <h1>Sign Up</h1>
       <SignUpForm history={history} />
+      <SignInLink />
     </div>
   );
 };
@@ -31,10 +36,3 @@ const enhance = compose(
 );
 
 export default enhance(SignUpPage);
-
-export const SignUpLink = () => (
-  <p>
-    Don't have an account? &nbsp;
-    <Link to={SIGN_UP}>Sign Up</Link>
-  </p>
-);

@@ -23,3 +23,6 @@ yarn-error.log*
 # firebase auth
 config.ts
 .env.*
+
+# css build files
+src/**/*.css

@@ -3,7 +3,7 @@ import JarListItem from './JarListItem';
 
 const JarList = ({ jars, username }) => (
   <div>
-    <h2>Your jars</h2>
+    <h2>My jars</h2>
 
     {Object.keys(jars).map(id => (
       <JarListItem

@@ -4,8 +4,6 @@ import {
   Route,
 } from 'react-router-dom';
 
-import Navigation from './components/Navigation';
-
 import * as Account from './pages/Account';
 import Landing from './pages/Landing';
 import Home from './pages/Home';
@@ -13,11 +11,12 @@ import JarView from './pages/Jar/JarView';
 
 import * as routes from './constants/routes';
 import withAuthentication from './components/Authentication/withAuthentication';
+import Header from './components/Header';
 
 const App = () => (
   <Router>
     <div>
-      <Navigation />
+      <Header />
 
       <hr/>
 

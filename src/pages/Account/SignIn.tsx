@@ -1,18 +1,25 @@
 import * as React from "react";
-import { withRouter } from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
 import { connect } from "react-redux";
 import { compose } from "recompose";
 
 import SignInForm from '../../components/Authentication/SignInForm';
-import { SignUpLink } from './SignUp';
 import { PasswordForgetLink } from "./PasswordForget";
 import Error404 from '../Error404';
+import { SIGN_UP } from "../../constants/routes";
+
+const SignUpLink = () => (
+  <p>
+    Don't have an account? &nbsp;
+    <Link to={SIGN_UP}>Sign Up</Link>
+  </p>
+);
 
 const SignInPage: any = ({ history, currentUser }) => {
   return currentUser
     ? <Error404 />
     : (
-    <div>
+    <div className="login">
       <h1>Sign In</h1>
       <SignInForm history={history} />
       <PasswordForgetLink />

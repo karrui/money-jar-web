@@ -6,6 +6,9 @@ import { PersistGate } from 'redux-persist/integration/react';
 import App from "./App";
 import { store, persistor } from './store';
 import registerServiceWorker from "./registerServiceWorker";
+import './styles/css/index.css';
+
+const rootEl = document.getElementById("root") as HTMLElement;
 
 ReactDOM.render(
   <Provider store={store}>
@@ -13,6 +16,21 @@ ReactDOM.render(
       <App />
     </PersistGate>
   </Provider>,
-  document.getElementById("root") as HTMLElement,
+  rootEl,
 );
+
+if (module.hot) {
+  module.hot.accept('./App', () => {
+    const NextApp = require('./App').default;
+    ReactDOM.render(
+      <Provider store={store}>
+        <PersistGate loading={null} persistor={persistor}>
+          <NextApp />
+        </PersistGate>
+      </Provider>,
+      rootEl,
+    );
+  });
+}
+
 registerServiceWorker();
