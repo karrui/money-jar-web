@@ -1,0 +1,38 @@
+.add-circle {
+  height: 25px;
+  width: 25px;
+  background-color: #EEF1FD;
+  border-radius: 50%;
+  display: inline-block;
+  line-height: 25px;
+
+  &:after {
+    content: '+';
+    font-weight: 500;
+    font-size: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6981EC;
+  }
+}
+
+.remove-circle {
+  height: 25px;
+  width: 25px;
+  background-color: #FEEEF4;
+  border-radius: 50%;
+  display: inline-block;
+  line-height: 25px;
+
+  &:after {
+    content: '-';
+    font-weight: 500;
+    font-size: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #F7478C;
+    line-height: 22px;
+  }
+}

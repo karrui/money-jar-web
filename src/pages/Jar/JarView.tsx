@@ -1,11 +1,13 @@
 import * as React from 'react';
 import { compose } from 'recompose';
+import { formatMoney } from 'accounting-js';
 
 import withAuthorization from '../../components/Authentication/withAuthorization';
 import withRights from '../../components/Jar/withRights';
 import { connect, Dispatch } from 'react-redux';
 import { db } from '../../firebase/firebase';
 import AddJarTransactionForm from '../../components/Jar/AddJarTransactionForm';
+import WithdrawJarTransactionForm from '../../components/Jar/WithdrawJarTransactionForm';
 import Error404 from '../Error404';
 import HistoryItem from './HistoryItem';
 
@@ -19,11 +21,13 @@ class JarView extends React.Component<any, any> {
     this.state = {
       dbReference,
       isLoading: true,
-      isFormShown: false,
+      isAddFormShown: false,
+      isMinusFormShown: false,
     };
 
     // This binding is necessary to make `this` work in the callback
-    this.handleClick = this.handleClick.bind(this);
+    this.handleAdd = this.handleAdd.bind(this);
+    this.handleRemove = this.handleRemove.bind(this);
   }
 
   componentDidMount() {
@@ -42,9 +46,17 @@ class JarView extends React.Component<any, any> {
     this.state.dbReference.off();
   }
 
-  handleClick() {
+  handleAdd() {
     this.setState(prevState => ({
-      isFormShown: !prevState.isFormShown
+      isAddFormShown: !prevState.isAddFormShown,
+      isMinusFormShown: false,
+    }));
+  }
+
+  handleRemove() {
+    this.setState(prevState => ({
+      isMinusFormShown: !prevState.isMinusFormShown,
+      isAddFormShown: false,
     }));
   }
 
@@ -59,21 +71,47 @@ class JarView extends React.Component<any, any> {
       return <Error404 />;
     }
 
+    const { name, currentAmount, goalAmount } = currentJar;
+
     return (
-      <div>
-        <div>
-          {currentJar.name}
-          {currentJar.currentAmount} / {currentJar.goalAmount}
-          Last updated: {new Date(currentJar.lastUpdated).toLocaleTimeString()}
+      <div className="jar-view-content">
+        <div className="header-title">
+          {name}
         </div>
-        {this.state.isFormShown 
-          ? <AddJarTransactionForm />
-          : <button type="button" onClick={this.handleClick}>Add money</button>}
-        <div>
+        <div className="jar-card">
+          <div className="amt-wrapper">
+            <span className="symbol">$</span>
+            <span className="current-amt">{formatMoney(currentAmount, { symbol: '' })}</span>/{goalAmount}
+            {/* Last updated: {new Date(currentJar.lastUpdated).toLocaleTimeString()} */}
+          </div>
+          <div className="percentage">
+            You are &nbsp;
+            <span className="percent-value">{((currentAmount / goalAmount) * 100).toFixed(2)}%</span>
+            &nbsp;of the way there!
+          </div>
+        </div>
+        <div className="actions">
+          <div className="remove-transaction-wrapper clickable" onClick={this.handleRemove}>
+            <span className="remove-circle" />
+            <span className="text">Withdraw</span>
+          </div>
+
+          <div className="add-transaction-wrapper clickable" onClick={this.handleAdd}>
+            <span className="add-circle" />
+            {/* <i className="fas fa-plus-circle" /> */}
+            <span className="text">Add</span>
+          </div>
+        </div>
+        {this.state.isMinusFormShown && <WithdrawJarTransactionForm />}
+        {this.state.isAddFormShown && <AddJarTransactionForm />}
+        <div className="transaction">
+          <div className="header">Transactions</div>
+          <div className="transaction-list">
           {currentJar.history && Object.keys(currentJar.history).map((key) => {
             const item = currentJar.history[key];
             return <HistoryItem key={key} item={item} transactionId={key} jarId={currentJar.id} />;
           })}
+          </div>
         </div>
       </div>
     );
