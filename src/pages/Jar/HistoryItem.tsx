@@ -63,10 +63,14 @@ class HistoryItem extends React.PureComponent<Props, State> {
         <span className="user">{item.username}</span>
         {item.notes && <span className="notes">{item.notes}</span>}
         <span className="time">{this.formatDate(item.createdAt)}</span>
-        <span className={`${item.type}-amount`}>
-          {item.type === 'add' ? '+' : '-'}
-          {formatMoney(item.amount)}
-        </span>
+        {item.type === 'add'
+          ? <span className="add-amount">
+              +{formatMoney(item.amount)}
+            </span>
+          : <span className="withdraw-amount">
+              -{formatMoney(item.amount)}
+            </span>
+        }
       </div>
     );
   }
