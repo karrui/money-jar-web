@@ -1,5 +1,7 @@
 import * as React from 'react';
 import { formatMoney } from 'accounting-js';
+import { SlideDown } from 'react-slidedown';
+import 'react-slidedown/lib/slidedown.css';
 
 import Jar from '.';
 import { db } from '../../firebase/firebase';
@@ -105,39 +107,42 @@ class JarListItem extends React.Component<Props, State> {
             &nbsp;of the way there!
           </div>
         </div>
-        {isExpanded &&
-          <div className="expand-card">
-            <div className="actions">
-              <div
-                className={`remove-transaction-wrapper clickable ${isMinusFormShown ? 'active' : ''}`}
-                onClick={this.handleRemove}
-              >
-                <span className="remove-circle" />
-                <span className="text">Withdraw</span>
-              </div>
+        <SlideDown>
+          {isExpanded &&
+            <div className="expand-card">
+              <div className="actions">
+                <div
+                  className={`remove-transaction-wrapper clickable ${isMinusFormShown ? 'active' : ''}`}
+                  onClick={this.handleRemove}
+                >
+                  <span className="remove-circle" />
+                  <span className="text">Withdraw</span>
+                </div>
 
-              <div
-                className={`add-transaction-wrapper clickable ${isAddFormShown ? 'active' : ''}`}
-                onClick={this.handleAdd}
-              >
-                <span className="add-circle" />
-                {/* <i className="fas fa-plus-circle" /> */}
-                <span className="text">Add</span>
+                <div
+                  className={`add-transaction-wrapper clickable ${isAddFormShown ? 'active' : ''}`}
+                  onClick={this.handleAdd}
+                >
+                  <span className="add-circle" />
+                  <span className="text">Add</span>
+                </div>
+              </div>
+              <SlideDown>
+                {isMinusFormShown && <WithdrawJarTransactionForm currentJar={currentJar} />}
+                {isAddFormShown && <AddJarTransactionForm currentJar={currentJar} />}
+              </SlideDown>
+              <div className="transaction">
+                <div className="header">Transactions</div>
+                <div className="transaction-list">
+                {currentJar.history && Object.keys(currentJar.history).map((key) => {
+                  const item = currentJar.history[key];
+                  return <HistoryItem key={key} item={item} transactionId={key} jarId={currentJar.id} />;
+                })}
+                </div>
               </div>
             </div>
-            {isMinusFormShown && <WithdrawJarTransactionForm currentJar={currentJar} />}
-            {isAddFormShown && <AddJarTransactionForm currentJar={currentJar} />}
-            <div className="transaction">
-              <div className="header">Transactions</div>
-              <div className="transaction-list">
-              {currentJar.history && Object.keys(currentJar.history).map((key) => {
-                const item = currentJar.history[key];
-                return <HistoryItem key={key} item={item} transactionId={key} jarId={currentJar.id} />;
-              })}
-              </div>
-            </div>
-          </div>
-        }
+          }
+        </SlideDown>
       </div>
     );
   }
