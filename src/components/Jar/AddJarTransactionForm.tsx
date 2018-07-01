@@ -65,23 +65,30 @@ class AddJarTransactionForm extends React.Component<Props, State> {
       Number(amountToAdd) === 0;
 
     return (
-      <form onSubmit={this.onSubmit}>
-        <input
-          value={amountToAdd}
-          onChange={event => this.setState({ amountToAdd: event.target.value })}
-          type="number"
-          placeholder="0"
-        />
-        <input
-          value={notes}
-          onChange={event => this.setState({ notes: event.target.value })}
-          type="text"
-          placeholder="Notes (optional)"
-        />
-        <button type="submit" disabled={isInvalid}>
-          Add a transaction
-        </button>
-      </form>
+      <div className="form-area">
+        <div className="action-form-wrapper">
+          <form onSubmit={this.onSubmit}>
+            <span className="symbol">$</span>
+            <input
+              className="amt-input"
+              value={amountToAdd}
+              onChange={event => this.setState({ amountToAdd: event.target.value })}
+              type="number"
+              placeholder="0"
+            />
+            <input
+              className="notes-input"
+              value={notes}
+              onChange={event => this.setState({ notes: event.target.value })}
+              type="text"
+              placeholder="Notes (optional)"
+            />
+            <button className="submit-btn" type="submit" disabled={isInvalid}>
+              🤑
+            </button>
+          </form>
+        </div>
+      </div>
     );
   }
 }

@@ -72,6 +72,7 @@ class JarView extends React.Component<any, any> {
     }
 
     const { name, currentAmount, goalAmount } = currentJar;
+    const { isMinusFormShown, isAddFormShown } = this.state;
 
     return (
       <div className="jar-view-content">
@@ -91,19 +92,25 @@ class JarView extends React.Component<any, any> {
           </div>
         </div>
         <div className="actions">
-          <div className="remove-transaction-wrapper clickable" onClick={this.handleRemove}>
+          <div
+            className={`remove-transaction-wrapper clickable ${isMinusFormShown ? 'active' : ''}`}
+            onClick={this.handleRemove}
+          >
             <span className="remove-circle" />
             <span className="text">Withdraw</span>
           </div>
 
-          <div className="add-transaction-wrapper clickable" onClick={this.handleAdd}>
+          <div
+            className={`add-transaction-wrapper clickable ${isAddFormShown ? 'active' : ''}`}
+            onClick={this.handleAdd}
+          >
             <span className="add-circle" />
             {/* <i className="fas fa-plus-circle" /> */}
             <span className="text">Add</span>
           </div>
         </div>
-        {this.state.isMinusFormShown && <WithdrawJarTransactionForm />}
-        {this.state.isAddFormShown && <AddJarTransactionForm />}
+        {isMinusFormShown && <WithdrawJarTransactionForm />}
+        {isAddFormShown && <AddJarTransactionForm />}
         <div className="transaction">
           <div className="header">Transactions</div>
           <div className="transaction-list">
