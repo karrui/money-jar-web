@@ -1,7 +1,7 @@
 import * as React from 'react';
 import JarListItem from './JarListItem';
 
-const JarList = ({ jars, username }) => (
+const JarList = ({ jars }) => (
   <div>
     <h2>My jars</h2>
 
@@ -9,8 +9,6 @@ const JarList = ({ jars, username }) => (
       <JarListItem
         key={id}
         id={id}
-        username={username}
-        jars={jars}
       />
     ))}
   </div>

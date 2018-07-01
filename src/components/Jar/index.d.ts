@@ -6,4 +6,14 @@ export default interface Jar {
   lastUpdated: Date;
   name: string;
   owner: string;
+  history: JarHistory[];
+}
+
+interface JarHistory {
+  amount: number;
+  createdAt: Date;
+  notes: string;
+  type: string;
+  userId: string;
+  username: string;
 }

@@ -9,7 +9,7 @@ import { db } from '../../firebase/firebase';
 import AddJarTransactionForm from '../../components/Jar/AddJarTransactionForm';
 import WithdrawJarTransactionForm from '../../components/Jar/WithdrawJarTransactionForm';
 import Error404 from '../Error404';
-import HistoryItem from './HistoryItem';
+import HistoryItem from '../../components/Jar/HistoryItem';
 
 class JarView extends React.Component<any, any> {
   constructor(props: any) {

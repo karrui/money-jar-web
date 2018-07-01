@@ -19,6 +19,7 @@ interface Props {
 interface State {
   userId: string;
   isFormShown: boolean;
+  isLoading: boolean;
   dbQuery: firebase.database.Query;
   jars?: any;
 }
@@ -33,7 +34,8 @@ class HomePage extends React.Component<Props, State> {
     this.state = {
       userId,
       dbQuery,
-      isFormShown: false
+      isFormShown: false,
+      isLoading: true,
     };
 
     // This binding is necessary to make `this` work in the callback
@@ -46,6 +48,7 @@ class HomePage extends React.Component<Props, State> {
       const jars = snapshot.val();
       this.setState({
         jars,
+        isLoading: false,
       });
       onSetJars(jars);
     });
@@ -62,17 +65,18 @@ class HomePage extends React.Component<Props, State> {
   }
 
   render() {
-    const { username } = this.props;
-    const { jars } = this.state;
-    return (
-      <div>
+    const { jars, isLoading } = this.state;
+    return isLoading
+    ? <div>Loading...</div>
+    : (
+      <div className="home-view">
         {
           this.state.isFormShown 
           ? <CreateJarForm />
           : <button onClick={this.handleClick}>+</button>
         }
         {!!jars &&
-          <JarList jars={jars} username={username} />}
+          <JarList jars={jars} />}
       </div>
     );
   }

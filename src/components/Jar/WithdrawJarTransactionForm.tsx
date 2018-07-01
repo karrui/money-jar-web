@@ -12,13 +12,10 @@ interface Props {
 interface State {
   amountToWithdraw: string;
   notes: string;
-  currentJar: Jar;
-  currentUser: firebase.User;
 }
 
 const connectToRedux = connect(
   (state: any) => ({
-    currentJar: state.jars.currentJar,
     currentUser: state.session.currentUser,
   }),
 );
@@ -32,12 +29,8 @@ class WithdrawJarTransactionForm extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
 
-    const { currentUser, currentJar } = this.props;
-
     this.state = {
       ...INITIAL_STATE,
-      currentJar,
-      currentUser,
     };
   }
 
