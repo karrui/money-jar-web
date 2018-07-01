@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { formatMoney } from 'accounting-js';
+import { formatMoney, toFixed } from 'accounting-js';
 import { SlideDown } from 'react-slidedown';
 import 'react-slidedown/lib/slidedown.css';
 
@@ -96,14 +96,17 @@ class JarListItem extends React.Component<Props, State> {
         <div className="header-title">
           {name}
         </div>
-        <div className="jar-card clickable" onClick={this.handleExpand}>
+        <div
+          className={`jar-card clickable ${isExpanded ? 'expand' : ''}`}
+          onClick={this.handleExpand}
+        >
           <div className="amt-wrapper">
             <span className="symbol">$</span>
             <span className="current-amt">{formatMoney(currentAmount, { symbol: '' })}</span>/{goalAmount}
           </div>
           <div className="percentage">
             You are &nbsp;
-            <span className="percent-value">{((currentAmount / goalAmount) * 100).toFixed(2)}%</span>
+            <span className="percent-value">{toFixed(((currentAmount / goalAmount) * 100), 2)}%</span>
             &nbsp;of the way there!
           </div>
         </div>
@@ -127,7 +130,7 @@ class JarListItem extends React.Component<Props, State> {
                   <span className="text">Add</span>
                 </div>
               </div>
-              <SlideDown>
+              <SlideDown className="transition-action-slidedown">
                 {isMinusFormShown && <WithdrawJarTransactionForm currentJar={currentJar} />}
                 {isAddFormShown && <AddJarTransactionForm currentJar={currentJar} />}
               </SlideDown>

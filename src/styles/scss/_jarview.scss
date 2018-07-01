@@ -10,6 +10,8 @@
   }
   
   .jar-card {
+    top: 0;
+    z-index: 99;
     background: #FFF;
     border-radius: 4px;
     padding: 2em;
@@ -18,9 +20,13 @@
     justify-content: center;
     align-items: center;
     flex-flow: column;
-    position: relative;
     min-height: 8em;
     color: lightgray;
+    position: relative;
+
+    &.expand {
+      position: sticky;
+    }
     
     .amt-wrapper {
       font-family: $number-font;
@@ -67,7 +73,7 @@
       display: flex;
       // align-items: center;
       justify-content: space-between;
-      transition: all .1s linear;
+      transition: none;
   
       .text {
         font-weight: bold;
@@ -98,6 +104,11 @@
         background: darken(#EEF1FD, 5%);
       }
     }
+  }
+
+  .react-slidedown.transition-action-slidedown {
+    transition-duration: .3s;
+    transition-timing-function: cubic-bezier(0.47, 0, 0.75, 0.72);
   }
   
   .action-form-wrapper {
