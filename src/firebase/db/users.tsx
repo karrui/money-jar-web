@@ -1,13 +1,12 @@
 import { db } from '../firebase';
 
 /* User model in Firebase:
-
 id: {
   username: string,
   email: string,
-  ownedJars: [ jarId ],
+  jars: { key: type },  //type can be "owner" or "shared"
+  id: string,
 }
-
 */
 
 // User API

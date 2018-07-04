@@ -9,6 +9,7 @@ import Error404 from '../../pages/Error404';
 import WithdrawJarTransactionForm from './WithdrawJarTransactionForm';
 import AddJarTransactionForm from './AddJarTransactionForm';
 import HistoryItem from './HistoryItem';
+// import { shareJarToUserId } from '../../firebase/db/jars';
 
 interface Props {
   id: string;
@@ -42,6 +43,7 @@ class JarListItem extends React.Component<Props, State> {
     this.handleAdd = this.handleAdd.bind(this);
     this.handleRemove = this.handleRemove.bind(this);
     this.handleExpand = this.handleExpand.bind(this);
+    this.handleShareJar = this.handleShareJar.bind(this);
   }
 
   componentDidMount() {
@@ -78,6 +80,11 @@ class JarListItem extends React.Component<Props, State> {
     }));
   }
 
+  handleShareJar() {
+    // shareJarToUserId(jarId from form, user id from form);
+    console.log('jar will be shared to xxxx');
+  }
+
   render() {
     const { currentJar, isLoading, isAddFormShown, isMinusFormShown, isExpanded } = this.state;
 
@@ -95,6 +102,7 @@ class JarListItem extends React.Component<Props, State> {
       <div className="jar-view-content">
         <div className="header-title">
           {name}
+          <i className="fas fa-ellipsis-v clickable show-actions" onClick={this.handleShareJar}/>
         </div>
         <div
           className={`jar-card clickable ${isExpanded ? 'expand' : ''}`}

@@ -11,7 +11,6 @@ import JarList from '../components/Jar/JarList';
 interface Props {
   onSetJars: Function;
   onResetJars: Function;
-  jars: object;
   userId: string;
   username: string;
 }
@@ -20,8 +19,9 @@ interface State {
   userId: string;
   isFormShown: boolean;
   isLoading: boolean;
-  dbQuery: firebase.database.Query;
-  jars?: any;
+  dbOwnedQuery: firebase.database.Query;
+  dbSharedQuery: firebase.database.Query;
+  jars: object;
 }
 
 class HomePage extends React.Component<Props, State> {
@@ -29,13 +29,16 @@ class HomePage extends React.Component<Props, State> {
     super(props);
 
     const { userId } = this.props;
-    const dbQuery = db.ref(`/jars`).orderByChild('owner').equalTo(userId);
+    const dbOwnedQuery = db.ref(`/jars`).orderByChild('owner').equalTo(userId);
+    const dbSharedQuery = db.ref(`/jars`).orderByChild(`sharedTo/${userId}`).equalTo(true);
 
     this.state = {
       userId,
-      dbQuery,
+      dbOwnedQuery,
+      dbSharedQuery,
       isFormShown: false,
       isLoading: true,
+      jars: {},
     };
 
     // This binding is necessary to make `this` work in the callback
@@ -44,18 +47,27 @@ class HomePage extends React.Component<Props, State> {
 
   componentDidMount() {
     const { onSetJars } = this.props;
-    this.state.dbQuery.on('value', (snapshot: any) => {
-      const jars = snapshot.val();
+    this.state.dbOwnedQuery.on('value', (snapshot: firebase.database.DataSnapshot) => {
+      const ownedJars = snapshot.val();
       this.setState({
-        jars,
+        jars: { ...this.state.jars, ...ownedJars },
         isLoading: false,
       });
-      onSetJars(jars);
+      onSetJars(ownedJars);
+    });
+    this.state.dbSharedQuery.on('value', (snapshot: firebase.database.DataSnapshot) => {
+      const sharedJars = snapshot.val();
+      this.setState({
+        jars: { ...this.state.jars, ...sharedJars },
+        isLoading: false,
+      });
+      onSetJars(sharedJars);
     });
   }
 
   componentWillUnmount() {
-    this.state.dbQuery.off();
+    this.state.dbOwnedQuery.off();
+    this.state.dbSharedQuery.off();
   }
 
   handleClick() {
@@ -65,7 +77,7 @@ class HomePage extends React.Component<Props, State> {
   }
 
   render() {
-    const { jars, isLoading } = this.state;
+    const { isLoading, jars } = this.state;
     return isLoading
     ? <div>Loading...</div>
     : (

@@ -27,7 +27,7 @@ export const doCreateJar = (userId, jarName, currentAmount, goalAmount) => {
       owner: userId,
       id: key,
     }),
-    db.ref(`/users/${userId}/jars/${key}`).set(true)
+    db.ref(`/users/${userId}/jars/${key}`).set('owner')
   ]);
 };
 
@@ -105,10 +105,16 @@ export const removeTransactionFromJar = (transactionId, jarId, type) => {
 
 // Get all the jars by the user id
 export const getJarsByUserId = (userId) => {
-  return db.ref(`/jars`).orderByChild('owner').equalTo(userId).once('value');
+  return db.ref('/jars').orderByChild('owner').equalTo(userId).once('value');
 };
 
 // Get specific jar by user id and jar id
 export const getJarByJarId = (jarId) => {
   return db.ref(`/jars/${jarId}`).once('value');
+};
+
+// share jar to user
+export const shareJarToUserId = (jarId, userId) => {
+  db.ref(`/jars/${jarId}/sharedTo/${userId}`).set(true);
+  db.ref(`/users/${userId}/jars/${jarId}`).set('shared');
 };
