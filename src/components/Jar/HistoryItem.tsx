@@ -76,18 +76,4 @@ class HistoryItem extends React.PureComponent<Props, State> {
   }
 }
 
-// const HistoryItem = ({ transactionId, item, jarId }) => (
-//     <div className="history-item">
-//     <span className={`${item.type}-circle`} />
-//       <span className="user">{item.username}</span>
-//       {item.notes && <span className="notes">{item.notes}</span>}
-//       <span className="time">{new Date(item.createdAt).toLocaleString()}</span>
-//       <span className={`${item.type}-amount`}>
-//         {item.type === 'add' ? '+' : '-'}
-//         ${item.amount}
-//       </span>
-//       {/* <button onClick={() => removeTransactionFromJar(transactionId, jarId)} type="button">Delete</button> */}
-//     </div>
-// );
-
 export default HistoryItem;
