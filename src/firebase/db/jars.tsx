@@ -32,7 +32,12 @@ export const doCreateJar = (userId, jarName, currentAmount, goalAmount) => {
 };
 
 // Withdraw amount from jar with Id
-export const withdrawTransactionFromJar = (jar: Jar, user: firebase.User, transactionAmount: string, notes: string) => {
+export const withdrawTransactionFromJar = (
+  jar: Jar,
+  user: firebase.User,
+  transactionAmount: string,
+  notes: string = ""
+) => {
   const { id, currentAmount } = jar;
   const { displayName, uid } = user;
   const key = db.ref(`/jars/${id}/history`).push().key;
@@ -57,7 +62,12 @@ export const withdrawTransactionFromJar = (jar: Jar, user: firebase.User, transa
 };
 
 // Add amount into jar with Id
-export const addTransactionToJar = (jar: Jar, user: firebase.User, transactionAmount: string, notes: string) => {
+export const addTransactionToJar = (
+  jar: Jar,
+  user: firebase.User,
+  transactionAmount: string,
+  notes: string = ""
+) => {
   const { id, currentAmount } = jar;
   const { displayName, uid } = user;
   const key = db.ref(`/jars/${id}/history`).push().key;

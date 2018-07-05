@@ -22,3 +22,6 @@ export const checkUsernameExist = username =>
 
 export const onceGetUsers = () =>
   db.ref('users').once('value');
+
+export const findUserByEmail = email =>
+  db.ref('users/').orderByChild('email').equalTo(email).once('value');

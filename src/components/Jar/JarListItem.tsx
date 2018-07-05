@@ -1,28 +1,53 @@
 import * as React from 'react';
 import { formatMoney, toFixed } from 'accounting-js';
 import { SlideDown } from 'react-slidedown';
+import { SubmissionError, reset } from 'redux-form';
 import 'react-slidedown/lib/slidedown.css';
 
 import Jar from '.';
 import { db } from '../../firebase/firebase';
 import Error404 from '../../pages/Error404';
-import WithdrawJarTransactionForm from './WithdrawJarTransactionForm';
-import AddJarTransactionForm from './AddJarTransactionForm';
+import TransactionForm from './TransactionForm';
 import HistoryItem from './HistoryItem';
-// import { shareJarToUserId } from '../../firebase/db/jars';
+import { connect } from 'react-redux';
+import { addTransactionToJar, withdrawTransactionFromJar, shareJarToUserId } from '../../firebase/db/jars';
+import ShareForm from './ShareForm';
+import { findUserByEmail } from '../../firebase/db/users';
 
 interface Props {
   id: string;
+  currentUser: any;
+  resetShareForm: any;
 }
 
 interface State {
   dbReference: firebase.database.Reference;
   isLoading: boolean;
-  isExpanded: boolean;
+  isJarExpanded: boolean;
+  isShareExpanded: boolean;
   currentJar: Jar | null;
   isAddFormShown: boolean;
-  isMinusFormShown: boolean;
+  isWithdrawFormShown: boolean;
+  message: string;
 }
+
+interface TransactionFormValues {
+  amountToChange: string;
+  notes?: string;
+}
+
+interface ShareFormValues {
+  shareTo: string;
+}
+
+const connectToRedux = connect(
+  (state: any) => ({
+    currentUser: state.session.currentUser,
+  }),
+  (dispatch: any) => ({
+    resetShareForm: () => dispatch(reset('share')),
+  })
+);
 
 class JarListItem extends React.Component<Props, State> {
   constructor(props: Props) {
@@ -34,16 +59,21 @@ class JarListItem extends React.Component<Props, State> {
     this.state = {
       dbReference,
       isLoading: true,
-      isExpanded: false,
+      isJarExpanded: false,
+      isShareExpanded: false,
       isAddFormShown: false,
-      isMinusFormShown: false,
+      isWithdrawFormShown: false,
       currentJar: null,
+      message: "",
     };
 
+    this.handleExpandAdd = this.handleExpandAdd.bind(this);
+    this.handleExpandRemove = this.handleExpandRemove.bind(this);
+    this.handleExpandJar = this.handleExpandJar.bind(this);
+    this.handleExpandShare = this.handleExpandShare.bind(this);
     this.handleAdd = this.handleAdd.bind(this);
-    this.handleRemove = this.handleRemove.bind(this);
-    this.handleExpand = this.handleExpand.bind(this);
-    this.handleShareJar = this.handleShareJar.bind(this);
+    this.handleWithdraw = this.handleWithdraw.bind(this);
+    this.handleShare = this.handleShare.bind(this);
   }
 
   componentDidMount() {
@@ -60,33 +90,90 @@ class JarListItem extends React.Component<Props, State> {
     this.state.dbReference.off();
   }
 
-  handleAdd() {
+  handleExpandAdd() {
     this.setState(prevState => ({
       isAddFormShown: !prevState.isAddFormShown,
-      isMinusFormShown: false,
+      isWithdrawFormShown: false,
     }));
   }
 
-  handleRemove() {
+  handleExpandRemove() {
     this.setState(prevState => ({
-      isMinusFormShown: !prevState.isMinusFormShown,
+      isWithdrawFormShown: !prevState.isWithdrawFormShown,
       isAddFormShown: false,
     }));
   }
 
-  handleExpand() {
+  handleExpandJar() {
     this.setState(prevState => ({
-      isExpanded: !prevState.isExpanded,
+      isJarExpanded: !prevState.isJarExpanded,
     }));
   }
 
-  handleShareJar() {
-    // shareJarToUserId(jarId from form, user id from form);
-    console.log('jar will be shared to xxxx');
+  handleExpandShare() {
+    this.setState(prevState => ({
+      isShareExpanded: !prevState.isShareExpanded,
+      message: ""
+    }));
+  }
+
+  handleAdd = (values: TransactionFormValues) => {
+    const { amountToChange, notes } = values;
+    const { currentJar } = this.state;
+    const { currentUser } = this.props;
+
+    if (currentJar) {
+      addTransactionToJar(currentJar, currentUser, amountToChange, notes);
+    }
+
+    this.setState({
+      isAddFormShown: false,
+    });
+  }
+
+  handleWithdraw = (values: TransactionFormValues) => {
+    const { amountToChange, notes } = values;
+    const { currentJar } = this.state;
+    const { currentUser } = this.props;
+
+    if (currentJar) {
+      withdrawTransactionFromJar(currentJar, currentUser, amountToChange, notes);
+    }
+
+    this.setState({
+      isWithdrawFormShown: false,
+    });
+  }
+
+  handleShare = (values: ShareFormValues) => {
+    const { shareTo } = values;
+    const { currentJar } = this.state;
+    const { resetShareForm } = this.props;
+
+    return findUserByEmail(shareTo).then((snapshot) => {
+      const user = snapshot.val();
+      if (!user) {
+        throw new SubmissionError({ _error: 'Email does not exist 😢' });
+      } else {
+        shareJarToUserId(currentJar!.id, Object.keys(user)[0]);
+        resetShareForm();
+        this.setState({
+          message: `Successfully shared to ${shareTo}`
+        });
+      }
+    });
   }
 
   render() {
-    const { currentJar, isLoading, isAddFormShown, isMinusFormShown, isExpanded } = this.state;
+    const {
+      currentJar,
+      isLoading,
+      isAddFormShown,
+      isWithdrawFormShown,
+      isJarExpanded,
+      isShareExpanded,
+      message,
+    } = this.state;
 
     if (isLoading) {
       return <div>Please wait...</div>;
@@ -102,11 +189,19 @@ class JarListItem extends React.Component<Props, State> {
       <div className="jar-view-content">
         <div className="header-title">
           {name}
-          <i className="fas fa-ellipsis-v clickable show-actions" onClick={this.handleShareJar}/>
+          <i className="fas fa-ellipsis-v clickable show-actions" onClick={this.handleExpandShare}/>
         </div>
+        <SlideDown>
+          {isShareExpanded && 
+            <div className="share-wrapper">
+              <ShareForm onSubmit={this.handleShare} />
+              {message && <span>{message}</span>}
+            </div>
+          }
+        </SlideDown>
         <div
-          className={`jar-card clickable ${isExpanded ? 'expand' : ''}`}
-          onClick={this.handleExpand}
+          className={`jar-card clickable ${isJarExpanded ? 'expand' : ''}`}
+          onClick={this.handleExpandJar}
         >
           <div className="amt-wrapper">
             <span className="symbol">$</span>
@@ -119,12 +214,12 @@ class JarListItem extends React.Component<Props, State> {
           </div>
         </div>
         <SlideDown>
-          {isExpanded &&
+          {isJarExpanded &&
             <div className="expand-card">
               <div className="actions">
                 <div
-                  className={`remove-transaction-wrapper clickable ${isMinusFormShown ? 'active' : ''}`}
-                  onClick={this.handleRemove}
+                  className={`remove-transaction-wrapper clickable ${isWithdrawFormShown ? 'active' : ''}`}
+                  onClick={this.handleExpandRemove}
                 >
                   <span className="remove-circle" />
                   <span className="text">Withdraw</span>
@@ -132,15 +227,15 @@ class JarListItem extends React.Component<Props, State> {
 
                 <div
                   className={`add-transaction-wrapper clickable ${isAddFormShown ? 'active' : ''}`}
-                  onClick={this.handleAdd}
+                  onClick={this.handleExpandAdd}
                 >
                   <span className="add-circle" />
                   <span className="text">Add</span>
                 </div>
               </div>
               <SlideDown className="transition-action-slidedown">
-                {isMinusFormShown && <WithdrawJarTransactionForm currentJar={currentJar} />}
-                {isAddFormShown && <AddJarTransactionForm currentJar={currentJar} />}
+                {isAddFormShown && <TransactionForm type="add" onSubmit={this.handleAdd} />}
+                {isWithdrawFormShown && <TransactionForm type="withdraw" onSubmit={this.handleWithdraw} />}
               </SlideDown>
               <div className="transaction">
                 <div className="header">Transactions</div>
@@ -159,4 +254,4 @@ class JarListItem extends React.Component<Props, State> {
   }
 }
 
-export default JarListItem;
+export default connectToRedux(JarListItem);
