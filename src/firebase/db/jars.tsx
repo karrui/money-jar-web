@@ -128,3 +128,24 @@ export const shareJarToUserId = (jarId, userId) => {
   db.ref(`/jars/${jarId}/sharedTo/${userId}`).set(true);
   db.ref(`/users/${userId}/jars/${jarId}`).set('shared');
 };
+
+// delete jar
+export const deleteJarFromUserByJarId = (userId, jarId) => {
+  db.ref(`/users/${userId}/jars`).child(jarId).remove();
+
+  const jarRef = db.ref(`/jars/${jarId}`);
+  jarRef.once('value')
+  .then((jarSnapshot) => {
+    const jar = jarSnapshot.val();
+    db.ref(`/deletedJars/${jarId}`).set(jar);
+    jarRef.child('sharedTo').once('value').then((sharedSnapshot) => {
+      if (sharedSnapshot) {
+        const sharedToUserIds = Object.keys(sharedSnapshot.val());
+        sharedToUserIds.map((id) => {
+          db.ref(`/users/${id}/jars`).child(jarId).remove();
+        });
+      }
+    });
+  })
+  .then(() => jarRef.remove());
+};

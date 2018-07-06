@@ -6,11 +6,15 @@ import 'react-slidedown/lib/slidedown.css';
 
 import Jar from '.';
 import { db } from '../../firebase/firebase';
-import Error404 from '../../pages/Error404';
 import TransactionForm from './TransactionForm';
 import HistoryItem from './HistoryItem';
 import { connect } from 'react-redux';
-import { addTransactionToJar, withdrawTransactionFromJar, shareJarToUserId } from '../../firebase/db/jars';
+import {
+  addTransactionToJar,
+  withdrawTransactionFromJar,
+  shareJarToUserId,
+  deleteJarFromUserByJarId,
+} from '../../firebase/db/jars';
 import ShareForm from './ShareForm';
 import { findUserByEmail } from '../../firebase/db/users';
 
@@ -74,6 +78,7 @@ class JarListItem extends React.Component<Props, State> {
     this.handleAdd = this.handleAdd.bind(this);
     this.handleWithdraw = this.handleWithdraw.bind(this);
     this.handleShare = this.handleShare.bind(this);
+    this.handleDeleteJar = this.handleDeleteJar.bind(this);
   }
 
   componentDidMount() {
@@ -90,27 +95,27 @@ class JarListItem extends React.Component<Props, State> {
     this.state.dbReference.off();
   }
 
-  handleExpandAdd() {
+  handleExpandAdd = () => {
     this.setState(prevState => ({
       isAddFormShown: !prevState.isAddFormShown,
       isWithdrawFormShown: false,
     }));
   }
 
-  handleExpandRemove() {
+  handleExpandRemove = () => {
     this.setState(prevState => ({
       isWithdrawFormShown: !prevState.isWithdrawFormShown,
       isAddFormShown: false,
     }));
   }
 
-  handleExpandJar() {
+  handleExpandJar = () => {
     this.setState(prevState => ({
       isJarExpanded: !prevState.isJarExpanded,
     }));
   }
 
-  handleExpandShare() {
+  handleExpandShare = () => {
     this.setState(prevState => ({
       isShareExpanded: !prevState.isShareExpanded,
       message: ""
@@ -153,15 +158,22 @@ class JarListItem extends React.Component<Props, State> {
     return findUserByEmail(shareTo).then((snapshot) => {
       const user = snapshot.val();
       if (!user) {
-        throw new SubmissionError({ _error: 'Email does not exist 😢' });
+        throw new SubmissionError({ _error: 'Oops! No such user 😢' });
       } else {
         shareJarToUserId(currentJar!.id, Object.keys(user)[0]);
         resetShareForm();
         this.setState({
-          message: `Successfully shared to ${shareTo}`
+          message: `Woohoo! Shared!`
         });
       }
     });
+  }
+
+  handleDeleteJar = () => {
+    const { currentUser } = this.props;
+    const { currentJar } = this.state;
+
+    deleteJarFromUserByJarId(currentUser.uid, currentJar!.id);
   }
 
   render() {
@@ -180,7 +192,7 @@ class JarListItem extends React.Component<Props, State> {
     }
 
     if (currentJar === null) {
-      return <Error404 />;
+      return null;
     }
 
     const { name, currentAmount, goalAmount } = currentJar;
@@ -189,66 +201,83 @@ class JarListItem extends React.Component<Props, State> {
       <div className="jar-view-content">
         <div className="header-title">
           {name}
-          <i className="fas fa-ellipsis-v clickable show-actions" onClick={this.handleExpandShare}/>
         </div>
-        <SlideDown>
+        <div className="jar-card-wrapper">
+          <div className="sticky">
+            <i className="fas fa-ellipsis-v clickable show-options" onClick={this.handleExpandShare}/>
+          </div>
           {isShareExpanded && 
-            <div className="share-wrapper">
-              <ShareForm onSubmit={this.handleShare} />
-              {message && <span>{message}</span>}
+            <div className="sticky">
+              <div className="options-wrapper">
+                <div className="share-wrapper">
+                  <div className="header">
+                    <span className="text">Share</span>
+                    <span className="close-share clickable" onClick={this.handleExpandShare}>
+                      <i className="fas fa-times" />
+                    </span>
+                  </div>
+                  <ShareForm message={message} onSubmit={this.handleShare} />
+                </div>
+                <div className="delete-wrapper">
+                  <span className="text">Delete jar</span>
+                  <button className="delete-btn" onClick={this.handleDeleteJar}>
+                    🗑️
+                  </button>
+                </div>
+              </div>
             </div>
           }
-        </SlideDown>
-        <div
-          className={`jar-card clickable ${isJarExpanded ? 'expand' : ''}`}
-          onClick={this.handleExpandJar}
-        >
-          <div className="amt-wrapper">
-            <span className="symbol">$</span>
-            <span className="current-amt">{formatMoney(currentAmount, { symbol: '' })}</span>/{goalAmount}
+          <div
+            className={`jar-card clickable ${isJarExpanded ? 'expand' : ''}`}
+            onClick={this.handleExpandJar}
+          >
+            <div className="amt-wrapper">
+              <span className="symbol">$</span>
+              <span className="current-amt">{formatMoney(currentAmount, { symbol: '' })}</span>/{goalAmount}
+            </div>
+            <div className="percentage">
+              You are &nbsp;
+              <span className="percent-value">{toFixed(((currentAmount / goalAmount) * 100), 2)}%</span>
+              &nbsp;of the way there!
+            </div>
           </div>
-          <div className="percentage">
-            You are &nbsp;
-            <span className="percent-value">{toFixed(((currentAmount / goalAmount) * 100), 2)}%</span>
-            &nbsp;of the way there!
-          </div>
-        </div>
-        <SlideDown>
-          {isJarExpanded &&
-            <div className="expand-card">
-              <div className="actions">
-                <div
-                  className={`remove-transaction-wrapper clickable ${isWithdrawFormShown ? 'active' : ''}`}
-                  onClick={this.handleExpandRemove}
-                >
-                  <span className="remove-circle" />
-                  <span className="text">Withdraw</span>
-                </div>
+          <SlideDown>
+            {isJarExpanded &&
+              <div className="expand-card">
+                <div className="actions">
+                  <div
+                    className={`remove-transaction-wrapper clickable ${isWithdrawFormShown ? 'active' : ''}`}
+                    onClick={this.handleExpandRemove}
+                  >
+                    <span className="remove-circle" />
+                    <span className="text">Withdraw</span>
+                  </div>
 
-                <div
-                  className={`add-transaction-wrapper clickable ${isAddFormShown ? 'active' : ''}`}
-                  onClick={this.handleExpandAdd}
-                >
-                  <span className="add-circle" />
-                  <span className="text">Add</span>
+                  <div
+                    className={`add-transaction-wrapper clickable ${isAddFormShown ? 'active' : ''}`}
+                    onClick={this.handleExpandAdd}
+                  >
+                    <span className="add-circle" />
+                    <span className="text">Add</span>
+                  </div>
+                </div>
+                <SlideDown className="transition-action-slidedown">
+                  {isAddFormShown && <TransactionForm type="add" onSubmit={this.handleAdd} />}
+                  {isWithdrawFormShown && <TransactionForm type="withdraw" onSubmit={this.handleWithdraw} />}
+                </SlideDown>
+                <div className="transaction">
+                  <div className="header">Transactions</div>
+                  <div className="transaction-list">
+                  {currentJar.history && Object.keys(currentJar.history).reverse().map((key) => {
+                    const item = currentJar.history[key];
+                    return <HistoryItem key={key} item={item} transactionId={key} jarId={currentJar.id} />;
+                  })}
+                  </div>
                 </div>
               </div>
-              <SlideDown className="transition-action-slidedown">
-                {isAddFormShown && <TransactionForm type="add" onSubmit={this.handleAdd} />}
-                {isWithdrawFormShown && <TransactionForm type="withdraw" onSubmit={this.handleWithdraw} />}
-              </SlideDown>
-              <div className="transaction">
-                <div className="header">Transactions</div>
-                <div className="transaction-list">
-                {currentJar.history && Object.keys(currentJar.history).map((key) => {
-                  const item = currentJar.history[key];
-                  return <HistoryItem key={key} item={item} transactionId={key} jarId={currentJar.id} />;
-                })}
-                </div>
-              </div>
-            </div>
-          }
-        </SlideDown>
+            }
+          </SlideDown>
+        </div>
       </div>
     );
   }
