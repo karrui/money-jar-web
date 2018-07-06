@@ -139,8 +139,9 @@ export const deleteJarFromUserByJarId = (userId, jarId) => {
     const jar = jarSnapshot.val();
     db.ref(`/deletedJars/${jarId}`).set(jar);
     jarRef.child('sharedTo').once('value').then((sharedSnapshot) => {
-      if (sharedSnapshot) {
-        const sharedToUserIds = Object.keys(sharedSnapshot.val());
+      const snapShotKeys = sharedSnapshot.val();
+      if (snapShotKeys) {
+        const sharedToUserIds = Object.keys(snapShotKeys);
         sharedToUserIds.map((id) => {
           db.ref(`/users/${id}/jars`).child(jarId).remove();
         });

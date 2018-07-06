@@ -21,3 +21,88 @@
     width: 100%;
   }
 }
+
+.create-form {
+  background: #FFF;
+  border-radius: 4px;
+  padding: 2em;
+  margin: 0 1em;
+  color: lightgray;
+  position: relative;
+  box-shadow: 0 0 20px 0px #5858580d;
+  display: flex;
+
+  @media only screen and (max-width: 992px) {
+    flex-direction: column;
+
+    .submit-btn {
+      width: 100%;
+    }
+  }
+
+  .submit-btn {
+    background: linear-gradient(45deg, #B388EB, #8093F1);
+    &:hover {
+      background: linear-gradient(45deg, rgb(232, 136, 235), rgb(152, 128, 241));
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: .5;
+      background: linear-gradient(45deg, #B388EB, #8093F1);
+    }
+  }
+}
+.create-form-wrapper {
+  flex: 2;
+  padding-right: 2em;
+  padding-bottom: 1em;
+
+  input {
+    outline: none;
+    border: none;
+    border-bottom: 2px solid lightgray;
+    border-radius: 0;
+  }
+
+  .name-input {
+    font-size: 1.5em;
+    width: 100%;
+    margin-bottom: 1em;
+  }
+
+  .amount-wrapper {
+    display: flex;
+
+    .symbol {
+      font-size: 1em;
+      padding-bottom: 0.4em;
+    }
+  
+    .current-amount {
+      font-size: 2em;
+      text-align: end;
+      width: 3em;
+    }
+  
+    .slash {
+      font-size: 2em;
+      padding: 0 .3em;
+    }
+  
+    .goal-amount {
+      font-size: 2em;
+      width: 4em;
+    }
+  }
+}
+
+.home-create-form-wrapper {
+  position: relative;
+
+  .close-create-form {
+    position: absolute;
+    top: 1em;
+    right: 2em;
+  }
+}

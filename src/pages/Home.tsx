@@ -5,8 +5,9 @@ import { compose } from 'recompose';
 import withAuthorization from '../components/Authentication/withAuthorization';
 import { db } from '../firebase/firebase';
 import { Dispatch } from 'redux';
-import CreateJarForm from '../components/Jar/CreateJarForm';
+import CreateJarForm from '../components/Jar/CreateForm';
 import JarList from '../components/Jar/JarList';
+import { doCreateJar } from '../firebase/db/jars';
 
 interface Props {
   onSetJars: Function;
@@ -16,7 +17,6 @@ interface Props {
 }
 
 interface State {
-  userId: string;
   isFormShown: boolean;
   isLoading: boolean;
   dbOwnedQuery: firebase.database.Query;
@@ -33,7 +33,6 @@ class HomePage extends React.Component<Props, State> {
     const dbSharedQuery = db.ref(`/jars`).orderByChild(`sharedTo/${userId}`).equalTo(true);
 
     this.state = {
-      userId,
       dbOwnedQuery,
       dbSharedQuery,
       isFormShown: false,
@@ -70,10 +69,20 @@ class HomePage extends React.Component<Props, State> {
     this.state.dbSharedQuery.off();
   }
 
-  handleClick() {
+  handleClick = () => {
     this.setState(prevState => ({
       isFormShown: !prevState.isFormShown
     }));
+  }
+
+  handleCreateJar = (values) => {
+    const { name, currentAmount = 0, goalAmount } = values;
+    const { userId } = this.props;
+
+    doCreateJar(userId, name, currentAmount, goalAmount);
+    this.setState({
+      isFormShown: false,
+    });
   }
 
   render() {
@@ -84,7 +93,12 @@ class HomePage extends React.Component<Props, State> {
       <div className="home-view">
         {
           this.state.isFormShown 
-          ? <CreateJarForm />
+          ? <div className="home-create-form-wrapper">
+            <CreateJarForm onSubmit={this.handleCreateJar}/>
+            <span className="close-create-form clickable" onClick={this.handleClick}>
+              <i className="fas fa-times" />
+            </span>
+            </div>
           : <button onClick={this.handleClick}>+</button>
         }
         {!!jars &&
