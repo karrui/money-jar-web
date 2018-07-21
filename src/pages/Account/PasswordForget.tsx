@@ -6,6 +6,7 @@ import PasswordForgetForm from '../../components/Authentication/PasswordForgetFo
 import { PASSWORD_FORGET } from '../../constants/routes';
 import { connect } from 'react-redux';
 import Error404 from '../Error404';
+import { ReturnToSignInLink } from './SignUp';
 
 export const PasswordForgetLink = () => (
   <p>
@@ -17,9 +18,12 @@ const PasswordForgetPage = ({ currentUser }) => {
   return currentUser
   ? <Error404 />
   : (
-    <div>
-      <h1>Reset Password</h1>
-      <PasswordForgetForm />
+    <div className="login card">
+      <div className="login-inner card-inner">
+        <h1 className="words">Reset Password</h1>
+        <PasswordForgetForm />
+        <ReturnToSignInLink />
+      </div>
     </div>
   );
 };

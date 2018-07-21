@@ -52,10 +52,7 @@ class PasswordForgetForm extends React.Component<{}, State> {
           type="text"
           placeholder="Email Address"
         />
-        <button disabled={isInvalid} type="submit">
-          Reset My Password
-        </button>
-
+        <input disabled={isInvalid} type="submit" value="Reset My Password" />
         {message && <p>{message}</p>}
       </form>
     );

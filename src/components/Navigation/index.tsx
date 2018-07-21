@@ -7,8 +7,8 @@ import SignoutButton from './SignoutButton';
 
 const NavigationAuth = () => (
   <ul>
-    <li><Link to={routes.HOME}>Home</Link></li>
-    <li><Link to={routes.ACCOUNT}>Account</Link></li>
+    {/* <li><Link to={routes.HOME}>Home</Link></li>
+    <li><Link to={routes.ACCOUNT}>Account</Link></li> */}
     <li><SignoutButton /></li>
   </ul>
 );

@@ -14,6 +14,13 @@ const SignInLink = () => (
   </p>
 );
 
+export const ReturnToSignInLink = () => (
+  <p>
+    Or return to&nbsp;
+    <Link to={SIGN_IN}>Sign In</Link>
+  </p>
+);
+
 const SignUpPage: any = ({ history, currentUser }) => {
   return currentUser
   ? <Error404 />
