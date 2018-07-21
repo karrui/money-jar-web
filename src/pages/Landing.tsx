@@ -17,7 +17,7 @@ const LandingPage = () => (
   <div className="right">
     <div className="landing-gif-container">
       <iframe
-        src="/landing-demo.mp4"
+        src={'./landing-demo.mp4'}
         width="100%"
         height="100%"
         style={{ position: 'absolute' }}
