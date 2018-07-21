@@ -4,8 +4,6 @@ nav.header {
   background: white;
   box-shadow: 0 0 20px 0px #5858580d;
   padding: .5em;
-  display: flex;
-  justify-content: center;
 
   ul {
     list-style: none;
@@ -27,6 +25,7 @@ nav.header {
       display: flex;
       align-items: center;
       width: 80%;
+      margin: 0 auto;
 
       .nav-links.wide {
         flex: 1;
@@ -57,7 +56,6 @@ nav.header {
       justify-content: space-between;
       padding: 0 1em;
       align-items: center;
-      width: 100%;
 
       .brand {
         font-size: 3em;
