@@ -20,8 +20,8 @@ const NavigationNonAuth = () => (
   </ul>
 );
 
-const Navigation = ({ currentUser }) => (
-  <div className="nav-links">
+const Navigation = ({ currentUser, type }) => (
+  <div className={`nav-links ${type}`}>
     { currentUser
         ? <NavigationAuth />
         : <NavigationNonAuth />

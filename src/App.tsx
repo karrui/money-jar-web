@@ -16,7 +16,6 @@ const App = () => (
   <Router>
     <div>
       <Header />
-      <hr/>
       <div className="content">
         <Route exact={true} path={routes.LANDING} component={Landing} />
         <Route exact={true} path={routes.SIGN_UP} component={Account.SignUp} />

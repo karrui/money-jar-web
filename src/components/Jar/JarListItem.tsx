@@ -242,7 +242,7 @@ class JarListItem extends React.Component<Props, State> {
             </div>
           </div>
           <SlideDown>
-            {isJarExpanded &&
+            {isJarExpanded ?
               <div className="expand-card">
                 <div className="actions">
                   <div
@@ -262,8 +262,8 @@ class JarListItem extends React.Component<Props, State> {
                   </div>
                 </div>
                 <SlideDown className="transition-action-slidedown">
-                  {isAddFormShown && <TransactionForm type="add" onSubmit={this.handleAdd} />}
-                  {isWithdrawFormShown && <TransactionForm type="withdraw" onSubmit={this.handleWithdraw} />}
+                  {isAddFormShown ? <TransactionForm type="add" onSubmit={this.handleAdd} /> : null}
+                  {isWithdrawFormShown ? <TransactionForm type="withdraw" onSubmit={this.handleWithdraw} /> : null}
                 </SlideDown>
                 <div className="transaction">
                   <div className="header">Transactions</div>
@@ -275,6 +275,7 @@ class JarListItem extends React.Component<Props, State> {
                   </div>
                 </div>
               </div>
+              : null
             }
           </SlideDown>
         </div>

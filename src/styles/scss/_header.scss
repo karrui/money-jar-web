@@ -1,5 +1,105 @@
-.header {
-  .brand {
-    font-size: 3em;
+nav.header {
+  margin: 0 -0.5em;
+  margin-top: -0.5em;
+  background: white;
+  box-shadow: 0 0 20px 0px #5858580d;
+  padding: .5em;
+  display: flex;
+  justify-content: center;
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
   }
+  .navbar {
+    height: 4rem;
+  }
+
+  @media only screen and (min-width: 768px) {
+    .navbar-tiny-links,
+    .navbar-tiny {
+      display: none;
+    }
+
+    .navbar-wide {
+      display: flex;
+      align-items: center;
+      width: 80%;
+
+      .nav-links.wide {
+        flex: 1;
+      }
+
+      .brand {
+        font-size: 3em;
+      }
+
+      ul {
+        display: flex;
+        padding-left: 1em;
+
+        li {
+          padding: 1em;
+          font-size: 1.3em;
+
+          &:nth-child(2) {
+            flex: 1;
+          }
+        }
+      }
+    }
+  }
+  @media only screen and (max-width: 768px) {
+    .navbar-tiny {
+      display: flex;
+      justify-content: space-between;
+      padding: 0 1em;
+      align-items: center;
+      width: 100%;
+
+      .brand {
+        font-size: 3em;
+      }
+    }
+
+    .navbar-tiny-links {
+      .react-slidedown {
+          transition-duration: .4s;
+          transition-timing-function: ease-out;
+      }
+
+      ul {
+        li {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: .5em;
+
+          a {
+            font-size: 1.5rem;
+          }
+        }
+      }
+    }
+    .navbar-wide {
+      display: none;
+    }
+  }
+  a {
+    color: $text-primary;
+
+    &:hover {
+      color: darken($text-primary, 10%);
+    }
+
+    &.signout-link {
+      color: $color-bad !important;
+
+      &:hover {
+        color: darken($color-bad, 10%) !important;
+      }
+    }
+  }
+
 }
