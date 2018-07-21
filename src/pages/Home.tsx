@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'recompose';
+import { SlideDown } from 'react-slidedown';
+import 'react-slidedown/lib/slidedown.css';
 
 import withAuthorization from '../components/Authentication/withAuthorization';
 import { db } from '../firebase/firebase';
@@ -86,21 +88,20 @@ class HomePage extends React.Component<Props, State> {
   }
 
   render() {
-    const { isLoading, jars } = this.state;
+    const { isLoading, jars, isFormShown } = this.state;
     return isLoading
     ? <div>Loading...</div>
     : (
       <div className="home-view">
-        {
-          this.state.isFormShown 
-          ? <div className="home-create-form-wrapper">
-            <CreateJarForm onSubmit={this.handleCreateJar}/>
-            <span className="close-create-form clickable" onClick={this.handleClick}>
-              <i className="fas fa-times" />
-            </span>
+        <SlideDown>
+          {isFormShown ?
+            <div className="home-create-form-wrapper">
+              <CreateJarForm onSubmit={this.handleCreateJar}/>
             </div>
-          : <button onClick={this.handleClick}>+</button>
-        }
+            : null
+          }
+        </SlideDown>
+        <span className={`add-jar-btn ${isFormShown ? 'close' : ''}`} onClick={this.handleClick} />
         {!!jars &&
           <JarList jars={jars} />}
       </div>

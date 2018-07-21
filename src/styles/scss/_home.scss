@@ -22,6 +22,51 @@
   }
 }
 
+.home-view {
+  position: relative;
+}
+
+.add-jar-btn {
+  width: 3em;
+  height: 3em;
+  border-radius: 50%;
+  background: #c8d3ff;
+  cursor: pointer;
+  margin-right: 1em;
+  box-shadow: 0 0 20px 0px #5858580d;
+  position: absolute;
+  top: 0;
+  right: 0;
+
+  &.close {
+    transform: rotate(45deg);
+    background: none;
+    box-shadow: none;
+
+    &:hover {
+      background: none;
+    }
+  }
+
+  &:hover {
+    background: darken(#c8d3ff, 10%);
+
+    &:after {
+      color: darken(#6981ec, 10%);
+    }
+  }
+
+  &:after {
+    content: "+";
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 48px;
+    font-size: 2em;
+    color: #6981EC;
+  }
+}
+
 .create-form {
   background: #FFF;
   border-radius: 4px;
@@ -94,15 +139,5 @@
       font-size: 2em;
       width: 40%;
     }
-  }
-}
-
-.home-create-form-wrapper {
-  position: relative;
-
-  .close-create-form {
-    position: absolute;
-    top: 1em;
-    right: 2em;
   }
 }
