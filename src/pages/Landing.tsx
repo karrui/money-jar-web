@@ -16,7 +16,14 @@ const LandingPage = () => (
   </div>
   <div className="right">
     <div className="landing-gif-container">
-      <video width="100%" height="100%" controls={false} autoPlay={true} style={{ position: 'absolute' }}>
+      <video
+        width="100%"
+        height="100%"
+        controls={true}
+        loop={true}
+        autoPlay={true}
+        style={{ position: 'absolute' }}
+      >
         <source src={'./landing-demo.mp4'} type="video/mp4" />
       </video>
     </div>
