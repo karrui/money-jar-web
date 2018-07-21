@@ -6,6 +6,20 @@
 
    @media only screen and (min-width: 768px) {
       width: 80%;
+
+      .left {
+        margin-right: 1em;
+      }
+
+      .right {
+        .landing-gif-container {
+          border: 1px solid #444;
+          width: 100%;
+          height: 0;
+          padding-bottom: 104%;
+          position: relative;
+        }
+      }
    }
 
     @media only screen and (max-width: 768px) {
@@ -17,6 +31,19 @@
         display: flex;
         flex-direction: column;
         justify-content: center;
+        align-items: center;
+      }
+
+      .right {
+        margin-top: 2em;
+        .landing-gif-container {
+          width: 65vw;
+          padding-bottom: 104%;
+          position: relative;
+        }
+        .landing-gif-container {
+          border: 1px solid #444;
+        }
       }
     }
 

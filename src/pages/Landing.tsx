@@ -15,7 +15,7 @@ const LandingPage = () => (
     </span>
   </div>
   <div className="right">
-    <div style={{ width: '100%', height: 0, paddingBottom: '104%', position: 'relative' }}>
+    <div className="landing-gif-container">
       <iframe
         src="/landing-demo.mp4"
         width="100%"
