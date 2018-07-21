@@ -2,9 +2,7 @@ import * as React from 'react';
 import JarListItem from './JarListItem';
 
 const JarList = ({ jars }) => (
-  <div>
-    <h2>My jars</h2>
-
+  <div className="jar-list-container">
     {Object.keys(jars).map(id => (
       <JarListItem
         key={id}

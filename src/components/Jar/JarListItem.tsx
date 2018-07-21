@@ -212,9 +212,7 @@ class JarListItem extends React.Component<Props, State> {
                 <div className="share-wrapper">
                   <div className="header">
                     <span className="text">Share</span>
-                    <span className="close-share clickable" onClick={this.handleExpandShare}>
-                      <i className="fas fa-times" />
-                    </span>
+                    <span className="add-jar-btn close" onClick={this.handleExpandShare} />
                   </div>
                   <ShareForm message={message} onSubmit={this.handleShare} />
                 </div>
