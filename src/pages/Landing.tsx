@@ -9,10 +9,13 @@ const LandingPage = () => (
       <h1>A sharable, online memory jar</h1>
       <h2>Keep track of contributions and goals</h2>
     </div>
-    <span className="action-area">
+    <div className="action-area">
       <Link className="signup-btn" to={SIGN_UP}>Sign up for free</Link>
       <Link className="login-btn" to={SIGN_IN}>Log in</Link>
-    </span>
+    </div>
+    <div className="credits">
+      made by <a href="https://github.com/karrui">@karrui</a>
+    </div>
   </div>
   <div className="right">
     <div className="landing-gif-container">

@@ -53,11 +53,19 @@
   .left {
     .tagline {
       margin-bottom: 2em;
-
     }
 
     .action-area {
       display: flex;
+      margin-bottom: 2em;
+    }
+
+    .credits {
+      font-size: .8em;
+      
+      a {
+        color: #8093F1;
+      }
     }
   }
 
