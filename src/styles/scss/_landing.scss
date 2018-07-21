@@ -1,0 +1,65 @@
+.landing-container {
+  display: flex;
+  align-items: center;
+  height: 100vh;
+  margin: -7em 0;
+
+   @media only screen and (min-width: 768px) {
+      width: 80%;
+   }
+
+    @media only screen and (max-width: 768px) {
+      flex-direction: column;
+      padding: 0 1em;
+
+      .left {
+        margin-top: 5em;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+    }
+
+  .left,
+  .right {
+    flex: 1;
+  }
+
+  .left {
+    .tagline {
+      margin-bottom: 2em;
+
+    }
+
+    .action-area {
+      display: flex;
+    }
+  }
+
+  .signup-btn {
+    border-radius: 4px;
+    border: 2px solid #B388EB;
+    padding: 1em;
+    margin-right: 1em;
+    color: white;
+    background: linear-gradient(45deg, #B388EB, #8093F1);
+    font-weight: bold;
+
+    &:hover {
+      background: linear-gradient(45deg, rgb(232, 136, 235), rgb(152, 128, 241));
+      border-color: rgb(232, 136, 235);
+    }
+  }
+
+  .login-btn {
+    border-radius: 4px;
+    border: 2px solid #ec008c;
+    padding: 1em;
+    font-weight: bold;
+
+    &:hover {
+      color: white;
+      background: linear-gradient(45deg, #ec008c, #fc6767);
+    }
+  }
+}

@@ -1,26 +1,42 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
 import { withState, withHandlers, compose } from 'recompose';
 import Hamburger from 'react-hamburger-menu';
 import { SlideDown } from 'react-slidedown';
 import 'react-slidedown/lib/slidedown.css';
 
 import Navigation from '../Navigation';
+import { Link } from 'react-router-dom';
+import { HOME, LANDING } from '../../constants/routes';
+
+const connectToRedux = connect(
+  (state: any) => ({
+    currentUser: state.session.currentUser,
+  }),
+);
 
 const enhance: any = compose(
+  connectToRedux,
   withState('isExpand', 'setIsExpand', false),
   withHandlers({
     toggleExpand: ({ isExpand, setIsExpand }) => () => setIsExpand(!isExpand),
   }),
 );
 
-const Header = ({ toggleExpand, isExpand }: { toggleExpand: (event: any) => void, isExpand: boolean }) => (
+const Header = ({ currentUser, toggleExpand, isExpand }) => (
   <nav className="header">
     <div className="navbar navbar-wide">
-      <span className="brand">🍯</span>
+      {currentUser === null
+        ? <Link className="brand" to={LANDING}>🍯</Link>
+        : <Link className="brand" to={HOME}>🍯</Link>
+      }
       <Navigation type="wide" />
     </div>
     <div className="navbar navbar-tiny">
-      <span className="brand">🍯</span>
+      {currentUser === null
+        ? <Link className="brand" to={LANDING}>🍯</Link>
+        : <Link className="brand" to={HOME}>🍯</Link>
+      }
       <Hamburger
         isOpen={isExpand}
         menuClicked={toggleExpand}
