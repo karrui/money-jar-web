@@ -1,22 +1,23 @@
-import * as React from 'react';
-import { formatMoney, toFixed } from 'accounting-js';
-import { SlideDown } from 'react-slidedown';
-import { SubmissionError, reset } from 'redux-form';
-import 'react-slidedown/lib/slidedown.css';
+import * as React from "react";
+import { formatMoney, toFixed } from "accounting-js";
+import { SlideDown } from "react-slidedown";
+import { SubmissionError, reset } from "redux-form";
+import "react-slidedown/lib/slidedown.css";
 
-import Jar from '.';
-import { db } from '../../firebase/firebase';
-import TransactionForm from './TransactionForm';
-import HistoryItem from './HistoryItem';
-import { connect } from 'react-redux';
+import Jar from ".";
+import Contributors from "./Contributors";
+import { db } from "../../firebase/firebase";
+import TransactionForm from "./TransactionForm";
+import HistoryItem from "./HistoryItem";
+import { connect } from "react-redux";
 import {
   addTransactionToJar,
   withdrawTransactionFromJar,
   shareJarToUserId,
-  deleteJarFromUserByJarId,
-} from '../../firebase/db/jars';
-import ShareForm from './ShareForm';
-import { findUserByEmail } from '../../firebase/db/users';
+  deleteJarFromUserByJarId
+} from "../../firebase/db/jars";
+import ShareForm from "./ShareForm";
+import { findUserByEmail } from "../../firebase/db/users";
 
 interface Props {
   id: string;
@@ -46,10 +47,10 @@ interface ShareFormValues {
 
 const connectToRedux = connect(
   (state: any) => ({
-    currentUser: state.session.currentUser,
+    currentUser: state.session.currentUser
   }),
   (dispatch: any) => ({
-    resetShareForm: () => dispatch(reset('share')),
+    resetShareForm: () => dispatch(reset("share"))
   })
 );
 
@@ -68,7 +69,7 @@ class JarListItem extends React.Component<Props, State> {
       isAddFormShown: false,
       isWithdrawFormShown: false,
       currentJar: null,
-      message: "",
+      message: ""
     };
 
     this.handleExpandAdd = this.handleExpandAdd.bind(this);
@@ -82,11 +83,11 @@ class JarListItem extends React.Component<Props, State> {
   }
 
   componentDidMount() {
-    this.state.dbReference.on('value', (snapshot: any) => {
+    this.state.dbReference.on("value", (snapshot: any) => {
       const jar: Jar = snapshot.val();
       this.setState({
         currentJar: jar,
-        isLoading: false,
+        isLoading: false
       });
     });
   }
@@ -98,20 +99,20 @@ class JarListItem extends React.Component<Props, State> {
   handleExpandAdd = () => {
     this.setState(prevState => ({
       isAddFormShown: !prevState.isAddFormShown,
-      isWithdrawFormShown: false,
+      isWithdrawFormShown: false
     }));
   }
 
   handleExpandRemove = () => {
     this.setState(prevState => ({
       isWithdrawFormShown: !prevState.isWithdrawFormShown,
-      isAddFormShown: false,
+      isAddFormShown: false
     }));
   }
 
   handleExpandJar = () => {
     this.setState(prevState => ({
-      isJarExpanded: !prevState.isJarExpanded,
+      isJarExpanded: !prevState.isJarExpanded
     }));
   }
 
@@ -132,7 +133,7 @@ class JarListItem extends React.Component<Props, State> {
     }
 
     this.setState({
-      isAddFormShown: false,
+      isAddFormShown: false
     });
   }
 
@@ -142,11 +143,16 @@ class JarListItem extends React.Component<Props, State> {
     const { currentUser } = this.props;
 
     if (currentJar) {
-      withdrawTransactionFromJar(currentJar, currentUser, amountToChange, notes);
+      withdrawTransactionFromJar(
+        currentJar,
+        currentUser,
+        amountToChange,
+        notes
+      );
     }
 
     this.setState({
-      isWithdrawFormShown: false,
+      isWithdrawFormShown: false
     });
   }
 
@@ -158,7 +164,7 @@ class JarListItem extends React.Component<Props, State> {
     return findUserByEmail(shareTo).then((snapshot) => {
       const user = snapshot.val();
       if (!user) {
-        throw new SubmissionError({ _error: 'Oops! No such user 😢' });
+        throw new SubmissionError({ _error: "Oops! No such user 😢" });
       } else {
         shareJarToUserId(currentJar!.id, Object.keys(user)[0]);
         resetShareForm();
@@ -176,6 +182,23 @@ class JarListItem extends React.Component<Props, State> {
     deleteJarFromUserByJarId(currentUser.uid, currentJar!.id);
   }
 
+  sumBalance = (history) => {
+    const result = {};
+    Object.keys(history).map((key) => {
+      const username = history[key].username;
+      const type = history[key].type;
+      if (!result[username]) {
+        result[username] = 0;
+      }
+
+      type === 'withdraw'
+      ? result[username] -= history[key].amount
+      : result[username] += history[key].amount;
+    });
+
+    return result;
+  }
+
   render() {
     const {
       currentJar,
@@ -184,7 +207,7 @@ class JarListItem extends React.Component<Props, State> {
       isWithdrawFormShown,
       isJarExpanded,
       isShareExpanded,
-      message,
+      message
     } = this.state;
 
     if (isLoading) {
@@ -199,20 +222,24 @@ class JarListItem extends React.Component<Props, State> {
 
     return (
       <div className="jar-view-content">
-        <div className="header-title">
-          {name}
-        </div>
+        <div className="header-title">{name}</div>
         <div className="jar-card-wrapper">
           <div className="sticky">
-            <i className="fas fa-ellipsis-v clickable show-options" onClick={this.handleExpandShare}/>
+            <i
+              className="fas fa-ellipsis-v clickable show-options"
+              onClick={this.handleExpandShare}
+            />
           </div>
-          {isShareExpanded && 
+          {isShareExpanded && (
             <div className="sticky">
               <div className="options-wrapper">
                 <div className="share-wrapper">
                   <div className="header">
                     <span className="text">Share</span>
-                    <span className="add-jar-btn close" onClick={this.handleExpandShare} />
+                    <span
+                      className="add-jar-btn close"
+                      onClick={this.handleExpandShare}
+                    />
                   </div>
                   <ShareForm message={message} onSubmit={this.handleShare} />
                 </div>
@@ -224,27 +251,34 @@ class JarListItem extends React.Component<Props, State> {
                 </div>
               </div>
             </div>
-          }
+          )}
           <div
-            className={`jar-card clickable ${isJarExpanded ? 'expand' : ''}`}
+            className={`jar-card clickable ${isJarExpanded ? "expand" : ""}`}
             onClick={this.handleExpandJar}
           >
             <div className="amt-wrapper">
               <span className="symbol">$</span>
-              <span className="current-amt">{formatMoney(currentAmount, { symbol: '' })}</span>/{goalAmount}
+              <span className="current-amt">
+                {formatMoney(currentAmount, { symbol: "" })}
+              </span>
+              /{goalAmount}
             </div>
             <div className="percentage">
               You are &nbsp;
-              <span className="percent-value">{toFixed(((currentAmount / goalAmount) * 100), 2)}%</span>
+              <span className="percent-value">
+                {toFixed((currentAmount / goalAmount) * 100, 2)}%
+              </span>
               &nbsp;of the way there!
             </div>
           </div>
           <SlideDown>
-            {isJarExpanded ?
+            {isJarExpanded ? (
               <div className="expand-card">
                 <div className="actions">
                   <div
-                    className={`remove-transaction-wrapper clickable ${isWithdrawFormShown ? 'active' : ''}`}
+                    className={`remove-transaction-wrapper clickable ${
+                      isWithdrawFormShown ? "active" : ""
+                    }`}
                     onClick={this.handleExpandRemove}
                   >
                     <span className="remove-circle" />
@@ -252,7 +286,9 @@ class JarListItem extends React.Component<Props, State> {
                   </div>
 
                   <div
-                    className={`add-transaction-wrapper clickable ${isAddFormShown ? 'active' : ''}`}
+                    className={`add-transaction-wrapper clickable ${
+                      isAddFormShown ? "active" : ""
+                    }`}
                     onClick={this.handleExpandAdd}
                   >
                     <span className="add-circle" />
@@ -260,21 +296,47 @@ class JarListItem extends React.Component<Props, State> {
                   </div>
                 </div>
                 <SlideDown className="transition-action-slidedown">
-                  {isAddFormShown ? <TransactionForm type="add" onSubmit={this.handleAdd} /> : null}
-                  {isWithdrawFormShown ? <TransactionForm type="withdraw" onSubmit={this.handleWithdraw} /> : null}
+                  {isAddFormShown ? (
+                    <TransactionForm type="add" onSubmit={this.handleAdd} />
+                  ) : null}
+                  {isWithdrawFormShown ? (
+                    <TransactionForm
+                      type="withdraw"
+                      onSubmit={this.handleWithdraw}
+                    />
+                  ) : null}
                 </SlideDown>
+                <div className="balance-sheet">
+                  <div className="header">Contributors</div>
+                  <div className="contributor-list">
+                    {currentJar.history &&
+                      <Contributors
+                        contributors={this.sumBalance(currentJar.history)}
+                      />
+                    }
+                  </div>
+                </div>
                 <div className="transaction">
                   <div className="header">Transactions</div>
                   <div className="transaction-list">
-                  {currentJar.history && Object.keys(currentJar.history).reverse().map((key) => {
-                    const item = currentJar.history[key];
-                    return <HistoryItem key={key} item={item} transactionId={key} jarId={currentJar.id} />;
-                  })}
+                    {currentJar.history &&
+                      Object.keys(currentJar.history)
+                        .reverse()
+                        .map((key) => {
+                          const item = currentJar.history[key];
+                          return (
+                            <HistoryItem
+                              key={key}
+                              item={item}
+                              transactionId={key}
+                              jarId={currentJar.id}
+                            />
+                          );
+                        })}
                   </div>
                 </div>
               </div>
-              : null
-            }
+            ) : null}
           </SlideDown>
         </div>
       </div>

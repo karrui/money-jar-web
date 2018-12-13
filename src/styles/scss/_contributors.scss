@@ -1,0 +1,29 @@
+.contributor-list {
+  .contributor {
+    display: flex;
+    justify-content: space-between;
+    padding: 1em 1.5em;
+    border-bottom: 1px solid #F6F7F8;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    .name {
+      font-weight: bold;
+      font-size: 1.1em;
+    }
+
+    .amount {
+      font-weight: bold;
+
+      &.positive {
+        color: #37D779;
+      }
+
+      &.negative {
+        color: #F85B80;
+      }
+    }
+  }
+}
